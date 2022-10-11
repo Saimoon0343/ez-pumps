@@ -57,7 +57,10 @@ class AutoComplete extends Component {
               position: 'relative',
               //   padding: widthPercentageToDP('6%'),
               borderWidth: 1,
-              borderRadius: 10,
+              borderRadius: hp('1%'),
+              marginTop: hp('1'),
+              overflow: 'visible',
+              // height: hp('6'),
             },
             listView: {
               backgroundColor: '#fff',

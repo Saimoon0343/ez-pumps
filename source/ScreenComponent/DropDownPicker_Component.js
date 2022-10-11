@@ -12,19 +12,20 @@ function DropDownComponent({label, data, style, selectedValue, onChange}) {
       'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
     ]);
   }, []);
-
+  // console.log(15, selectedValue);
   // const reformattedArray = data.map(({ item }) => ({ key: item.id, value: item.id }));
 
   return (
     <SelectList
-      setSelected={selectedValue}
+      setSelected={item => onChange(item)}
       data={data.map(item => ({
         key: item.id || item.value || item.name,
         value: item.type || item.name || item.label || item.id,
       }))}
-      onSelect={item => {
-        return onChange(item.id || item.value || item);
-      }}
+      // onSelect={item => {
+      //   console.log(26, item);
+      //   // onChange(item);
+      // }}
     />
 
     // {data.map((item)=><Picker.Item label={ item.type || item.name || item.label || item.id} value={ item.id || item.value || item.name} />)}
