@@ -30,9 +30,9 @@ class Jobs extends Component {
   onFilterPress = filterText => {
     const { jobsFilter } = this.props;
     var filterValue;
-    if (filterText == 'Distance') {
-      console.log(34)
-      filterValue = jobsFilter.distance;
+    console.log(33, filterText)
+    if (filterText == 'State') {
+      filterValue = jobsFilter.states;
     } else if (filterText == 'Pump Type') {
       filterValue = jobsFilter.pumpType;
     } else {
@@ -48,11 +48,12 @@ class Jobs extends Component {
     }
     const { filterType } = this.state;
     const { jobsFilter } = this.props;
-    if (filterType == 'Distance') {
-      if (val.id == jobsFilter.distance.id) {
+    console.log(231, jobsFilter)
+    if (filterType == 'State') {
+      if (val.id == jobsFilter.states.id) {
         return;
       }
-      jobsFilter.distance = val;
+      jobsFilter.states = val;
     } else if (filterType == 'Pump Type') {
       if (val.id == jobsFilter.pumpType.id) {
         return;
@@ -76,10 +77,13 @@ class Jobs extends Component {
     // const distanceFilterData = distanceFilterData1.map(item => item?.name);
     console.log(74, distanceFilterData)
     if (filterType == 'State') {
+      console.log(79, filterType)
       return pump_form_info?.states;
     } else if (filterType == 'Pump Type') {
+      console.log(82, filterType)
       return pump_form_info?.pump_types;
     } else {
+      console.log(83, filterType)
       return pump_form_info?.job_types;
     }
   };
@@ -102,9 +106,14 @@ class Jobs extends Component {
 
           <View style={styles.FilterContainer}>
             {console.log(jobsFilter, 546546)}
+            {/* <JobsFilter
+              FilterName="Distance"
+              Type={jobsFilter.distance.type_name || 'Any'}
+              onPress={this.onFilterPress}
+            /> */}
             <JobsFilter
               FilterName="State"
-              Type={jobsFilter.distance.name || 'Any'}
+              Type={pump_form_info?.states?.name || 'Any'}
               onPress={this.onFilterPress}
             />
             <JobsFilter
@@ -146,7 +155,6 @@ const mapStateToProps = state => {
 
     jobTypes: state.appReducer.jobTypes,
     pumpTypes: state.appReducer.pumpTypes,
-    stateType: state.appReducer.stateType,
 
     jobsFilter: state.jobReducer.jobsFilter,
   };

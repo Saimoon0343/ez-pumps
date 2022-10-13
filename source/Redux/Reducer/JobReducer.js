@@ -24,25 +24,25 @@ const initialState = {
     rejected: [],
     requests: [],
     jobsFilter: {
-        distance: {id: '', type_name: ''},
-        pumpType: {id: '', type_name: ''},
-        jobType: {id: '', type_name: ''}
+        states: { id: '', type_name: '' },
+        pumpType: { id: '', type_name: '' },
+        jobType: { id: '', type_name: '' }
     }
 }
 
-export default (state=initialState, action) => {
-    const {type, company_form_info, jobs, pending, inprocess, completed, cancelled, failed, jobsFilter, applied, rejected, requests} = action;
+export default (state = initialState, action) => {
+    const { type, company_form_info, jobs, pending, inprocess, completed, cancelled, failed, jobsFilter, applied, rejected, requests } = action;
     switch (type) {
         case GET_COMPANY_FORM_INFO:
-            return {...state, company_form_info: company_form_info}
+            return { ...state, company_form_info: company_form_info }
         case CREATE_JOB:
-            return {...state, loading: true}
+            return { ...state, loading: true }
         case CREATE_JOB_DONE:
-            return {...state, loading: false, jobs: jobs}
+            return { ...state, loading: false, jobs: jobs }
 
 
         case LOAD_MY_JOBS:
-            return {...state, loading: true}
+            return { ...state, loading: true }
         case LOAD_MY_JOBS_DONE:
             return {
                 ...state,
@@ -57,7 +57,7 @@ export default (state=initialState, action) => {
                 failed: failed
             }
         case JOB_FILTER_CHANGE:
-            return {...state, jobsFilter}
+            return { ...state, jobsFilter }
         default:
             return state;
     }

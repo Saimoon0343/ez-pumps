@@ -46,15 +46,18 @@ class JobList extends Component {
     // var data = new FormData();
     // data.append('jobType', jobsFilter.jobType.id);
     // data.append('pumpType', jobsFilter.pumpType.id);
-    console.log(49, jobsFilter)
-    console.log(49, jobsFilter.pumpType.id)
-    console.log(50, jobsFilter.jobType.id)
+    // console.log(49, jobsFilter.stateType.id)
+
+    console.log('sTATE', jobsFilter.states.id)
+    console.log('PUMPTYPE', jobsFilter.pumpType.id)
+    console.log('jobType', jobsFilter.jobType.id)
     if (!loading && !isListEnd) {
       that.setState({ loading: true });
 
-      fetchAPI('GET', `get-all-company-jobs?state_id=1&job_type_id=${jobsFilter?.pumpType?.id}&pump_type_id=${jobsFilter?.JobType?.id}`)
+      // fetchAPI('GET', `get-all-company-jobs?state_id=1&job_type_id=${jobsFilter?.pumpType?.id}&pump_type_id=${jobsFilter?.JobType?.id}`)
+      fetchAPI('GET', `get-all-company-jobs?state_id=${jobsFilter?.states?.id}&job_type_id=${jobsFilter?.pumpType?.id}&pump_type_id=${jobsFilter?.JobType?.id}`, true, { page })
         .then(function (response) {
-          console.log(54, response)
+          // console.log(54, response)
           if (response.data.jobs.length > 0) {
             that.setState({
               success: true,
