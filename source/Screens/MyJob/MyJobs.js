@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View,
     Text,
@@ -9,14 +9,14 @@ import {
     RefreshControl,
     Dimensions,
 } from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
-import {connect} from 'react-redux';
-import {ScreenTypeChange} from '../../Redux/Action/App_Action';
+import { connect } from 'react-redux';
+import { ScreenTypeChange } from '../../Redux/Action/App_Action';
 import MyJobsSection from '../../ScreenComponent/MyJobsComponent/MyJobsSection';
-import {background, secondary} from '../../assets/colors';
-import {bold} from '../../assets/fonts';
-import {loadMyJobs} from '../../Redux/Action/JobsAction';
+import { background, secondary } from '../../assets/colors';
+import { bold } from '../../assets/fonts';
+import { loadMyJobs } from '../../Redux/Action/JobsAction';
 import ErrorMessage from '../../ScreenComponent/common/ErrorMessage';
 
 
@@ -32,32 +32,32 @@ class My_Jobs extends Component {
     }
 
     onRefresh = () => {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.props.loadMyJobs();
-        this.setState({refreshing: false});
+        this.setState({ refreshing: false });
 
     };
     renderMyJobs = () => {
-        const {refreshing} = this.state;
+        const { refreshing } = this.state;
         return (
-            <TouchableOpacity activeOpacity={1} onPress={() => this.setState({FilterToggle: false})}
-                              disabled={!this.state.FilterToggle} style={styles.main}>
+            <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ FilterToggle: false })}
+                disabled={!this.state.FilterToggle} style={styles.main}>
                 <Text style={styles.Heading}>
                     {this.state.filter + ' Jobs'}
                 </Text>
                 <ScrollView
                     nestedScrollEnabled={true}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{paddingBottom: hp('10%')}}
-                    refreshControl={<RefreshControl onRefresh={this.onRefresh} refreshing={refreshing}/>}
+                    contentContainerStyle={{ paddingBottom: hp('10%') }}
+                    refreshControl={<RefreshControl onRefresh={this.onRefresh} refreshing={refreshing} />}
                 >
                     {this.props.loading
                         ?
-                        <ActivityIndicator size={'large'} color={secondary} style={{padding: hp('10%')}}/>
+                        <ActivityIndicator size={'large'} color={secondary} style={{ padding: hp('10%') }} />
                         :
                         this.props.failed
-                            ? <ErrorMessage text="Couldn't Load Jobs"/>
-                            : <MyJobsSection filter={this.state.filter} navigation={this.props.navigation}/>
+                            ? <ErrorMessage text="Couldn't Load Jobs" />
+                            : <MyJobsSection filter={this.state.filter} navigation={this.props.navigation} />
                     }
                 </ScrollView>
             </TouchableOpacity>
@@ -66,17 +66,17 @@ class My_Jobs extends Component {
 
     render() {
         return (
-            <View style={{flex: 1, backgroundColor: 'white'}}>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <AppHeader
                     Heading={'MY JOBS'}
                     userType={this.props.userType}
                     borderRadius
                     notification
                     IsFilter={true}
-                    style={{zIndex: 100}}
+                    style={{ zIndex: 100 }}
                     Check_Filter={this.state.FilterToggle}
-                    onFilterPress={(text) => this.setState({filter: text, FilterToggle: false})}
-                    Close={() => this.setState({FilterToggle: !this.state.FilterToggle})}
+                    onFilterPress={(text) => this.setState({ filter: text, FilterToggle: false })}
+                    Close={() => this.setState({ FilterToggle: !this.state.FilterToggle })}
                 />
                 {this.renderMyJobs()}
             </View>

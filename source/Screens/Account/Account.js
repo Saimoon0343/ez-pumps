@@ -23,6 +23,15 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
+var address = {
+  desp: '',
+  region: {
+    latitude: null,
+    longitude: null,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  },
+};
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT =
   Platform.OS === 'ios' ? (IS_IPHONE_X ? hp('3%') : hp('2%')) : 0;
@@ -61,7 +70,7 @@ class AutoComplete extends Component {
         listViewDisplayed={true}
         fetchDetails={true}
         onPress={(data, details = null) => {
-          this.setState({
+          address = {
             desp: data.description,
             region: {
               latitude: details.geometry.location.lat,
@@ -69,12 +78,7 @@ class AutoComplete extends Component {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             },
-          });
-          this.props.setAddressData(
-            data.description,
-            details.geometry.location.lat,
-            details.geometry.location.lng,
-          );
+          };
         }}
         query={{
           key: 'AIzaSyA-BHlG4dOA1CxtzZoTal7e_feMEAe8Fqc',

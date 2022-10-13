@@ -31,6 +31,16 @@ import { errorHandler } from '../../utils';
 var FormData = require('form-data');
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
+var addressVar = {
+  desp: '',
+  region: {
+    latitude: 56788765,
+    longitude: 456787654,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  },
+};
+
 class AutoComplete extends Component {
   constructor(props) {
     console.log(props);
@@ -73,12 +83,12 @@ class AutoComplete extends Component {
           //       backgroundColor: '#fff',
           //     },
           //   }}
-          placeholder={'Enter Your Address'}
+          placeholder={addressVar.desp}
           listViewDisplayed={true}
           fetchDetails={true}
           onPress={(data, details = null) => {
-            // console.log(details.geometry.location.lat, 7999999999999999999)
-            this.setState({
+            console.log(79, data, details);
+            addressVar = {
               desp: data.description,
               region: {
                 latitude: details.geometry.location.lat,
@@ -86,19 +96,14 @@ class AutoComplete extends Component {
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               },
-            });
-            this.props.setAddressData(
-              data.description,
-              details.geometry.location.lat,
-              details.geometry.location.lng,
-            );
+            };
           }}
           query={{
             key: 'AIzaSyA-BHlG4dOA1CxtzZoTal7e_feMEAe8Fqc',
             language: 'en',
             components: 'country:us',
             types: 'establishment',
-            location: `${this.state.region.latitude},${this.state.region.longitude}`,
+            location: `${addressVar.region.latitude},${addressVar.region.longitude}`,
           }}
         />
       </View>
@@ -140,17 +145,27 @@ class Edit_Account extends React.Component {
       phone_number,
       company_name,
       email,
+      lat,
+      lng,
     } = this.props.user;
     this.setState({
       company_name,
       description,
       website,
       user_name,
-      address,
       phone_number,
       email,
       coverImage: `${BASE_URL}${cover_image}`,
     });
+    addressVar = {
+      desp: address,
+      region: {
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+    };
   }
 
   onEditPress = () => {
@@ -174,6 +189,9 @@ class Edit_Account extends React.Component {
     data.append('address', address);
     data.append('website', website);
     data.append('description', description);
+    data.append('address', addressVar.desp);
+    data.append('lat', addressVar.region.latitude);
+    data.append('lng', addressVar.region.longitude);
     fetchAPI('post', 'update-profile', data, token)
       .then(function (response) {
         Toast.show({ text1: response.data.message });

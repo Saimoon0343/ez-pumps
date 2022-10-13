@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar, Text } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppHeader from '../../../ScreenComponent/AppHeader';
 import JobsFilter from '../../../ScreenComponent/JobsFilter';
@@ -31,6 +31,7 @@ class Jobs extends Component {
     const { jobsFilter } = this.props;
     var filterValue;
     if (filterText == 'Distance') {
+      console.log(34)
       filterValue = jobsFilter.distance;
     } else if (filterText == 'Pump Type') {
       filterValue = jobsFilter.pumpType;
@@ -70,12 +71,12 @@ class Jobs extends Component {
   renderFilterData = () => {
     const { filterType } = this.state;
     const { jobTypes, pumpTypes, pump_form_info } = this.props;
-    const distanceFilterData = pump_form_info?.states;
+    const distanceFilterData = pump_form_info;
     // const pumpTypes = pump_form_info?.pump_types;
     // const distanceFilterData = distanceFilterData1.map(item => item?.name);
     console.log(74, distanceFilterData)
-    if (filterType == 'Distance') {
-      return distanceFilterData;
+    if (filterType == 'State') {
+      return pump_form_info?.states;
     } else if (filterType == 'Pump Type') {
       return pump_form_info?.pump_types;
     } else {
@@ -92,20 +93,18 @@ class Jobs extends Component {
         <StatusBar barStyle="light-content" />
         <AppHeader Heading={'JOBS'} borderRadius notification />
         <View style={styles.main}>
+
+
           <JobList
             navigation={this.props.navigation}
             jobsListRef={this.jobsListRef}
           />
+
           <View style={styles.FilterContainer}>
             {console.log(jobsFilter, 546546)}
-            {/* <JobsFilter
-              FilterName="Distance"
-              Type={jobsFilter.distance.type_name || 'Any'}
-              onPress={this.onFilterPress}
-            /> */}
             <JobsFilter
               FilterName="State"
-              Type={jobsFilter.distance.type_name || 'Any'}
+              Type={jobsFilter.distance.name || 'Any'}
               onPress={this.onFilterPress}
             />
             <JobsFilter
@@ -125,6 +124,7 @@ class Jobs extends Component {
               onPress={this.onFilterPress}
             />
           </View>
+
           <FilterModal
             heading={filterType}
             isVisible={filterVisible}

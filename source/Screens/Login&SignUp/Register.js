@@ -34,6 +34,16 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
+var address = {
+  desp: '',
+  region: {
+    latitude: null,
+    longitude: null,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  },
+};
+
 class AutoComplete extends Component {
   constructor(props) {
     super(props);
@@ -66,7 +76,7 @@ class AutoComplete extends Component {
         listViewDisplayed={true}
         fetchDetails={true}
         onPress={(data, details = null) => {
-          this.setState({
+          address = {
             desp: data.description,
             region: {
               latitude: details.geometry.location.lat,
@@ -74,12 +84,21 @@ class AutoComplete extends Component {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             },
-          });
-          this.props.setAddressData(
-            data.description,
-            details.geometry.location.lat,
-            details.geometry.location.lng,
-          );
+          };
+          // this.setState({
+          //   desp: data.description,
+          //   region: {
+          //     latitude: details.geometry.location.lat,
+          //     longitude: details.geometry.location.lng,
+          //     latitudeDelta: 0.0922,
+          //     longitudeDelta: 0.0421,
+          //   },
+          // });
+          // this.props.setAddressData(
+          //   data.description,
+          //   details.geometry.location.lat,
+          //   details.geometry.location.lng,
+          // );
         }}
         query={{
           key: 'AIzaSyA-BHlG4dOA1CxtzZoTal7e_feMEAe8Fqc',
@@ -123,7 +142,7 @@ class Register extends Component {
 
   Register_Now = async () => {
     const {username, name, description} = this.props;
-    const {ImageSource, address, lat, lng} = this.state;
+    const {ImageSource, lat, lng} = this.state;
     if (
       username == '' ||
       name == '' ||
@@ -134,9 +153,11 @@ class Register extends Component {
       Toast.show({text1: 'Please fill all fields'});
     } else {
       try {
-        await this.props.registerStepTwo(ImageSource, address, lat, lng);
+        await this.props.registerStepTwo(ImageSource, address);
       } catch (error) {
-        // console.log(error);
+        this.setState({error: true});
+
+        console.log(161, error);
       }
     }
   };
