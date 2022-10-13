@@ -20,6 +20,7 @@ import PointsBlock from '../../ScreenComponent/account/PointsBlock';
 import AccountDetailText from '../../ScreenComponent/account/AccountDetailText';
 import {BASE_URL, fetchAPI, getToken} from '../../services/index';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import moment from 'moment/moment';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -145,7 +146,10 @@ class Account extends Component {
           <AccountDetailText heading={'Address'} text={address} />
           <AccountDetailText heading={'Email'} text={email} />
           <AccountDetailText heading={'Website'} text={website} />
-          <AccountDetailText heading={'Join Date'} text={created_at} />
+          <AccountDetailText
+            heading={'Join Date'}
+            text={moment(created_at).format('MMM Do YY')}
+          />
           <Text style={styles.Heading}> My Reviews </Text>
           {this.state.ReviewObj.length > 0 &&
             this.state.ReviewObj.map((item, index) => {
