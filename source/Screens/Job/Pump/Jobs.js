@@ -134,6 +134,7 @@ const mapStateToProps = state => {
 
     jobTypes: state.appReducer.jobTypes,
     pumpTypes: state.appReducer.pumpTypes,
+    stateType: state.appReducer.stateType,
 
     jobsFilter: state.jobReducer.jobsFilter,
   };

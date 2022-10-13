@@ -28,7 +28,6 @@ import Toast from 'react-native-toast-message';
 
 function Availability({Day, OnChange, availability}) {
   const {is_enable, am_slot, pm_slot} = availability;
-
   return (
     <View style={styles.Container}>
       <View
@@ -53,13 +52,21 @@ function Availability({Day, OnChange, availability}) {
         <CheckBox
           value={am_slot}
           onValueChange={value => OnChange(Day, is_enable, value, pm_slot)}
+          disabled={!is_enable}
+          onTintColor={'red'}
+          onCheckColor={'red'}
           tintColors={{true: 'red'}}
+          // hideBox={!is_enable}
         />
         <Text style={{fontFamily: regular, fontSize: hp('1.8%')}}>AM</Text>
         <CheckBox
           value={pm_slot}
           onValueChange={value => OnChange(Day, is_enable, am_slot, value)}
           tintColors={{true: 'red'}}
+          onTintColor={'red'}
+          onCheckColor={'red'}
+          disabled={!is_enable}
+          // hideBox={!is_enable}
         />
         <Text style={{fontFamily: regular, fontSize: hp('1.8%')}}>PM</Text>
         <Switch

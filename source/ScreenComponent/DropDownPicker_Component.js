@@ -16,17 +16,26 @@ function DropDownComponent({label, data, style, selectedValue, onChange}) {
   // const reformattedArray = data.map(({ item }) => ({ key: item.id, value: item.id }));
 
   return (
-    <SelectList
-      setSelected={item => onChange(item)}
-      data={data.map(item => ({
-        key: item.id || item.value || item.name,
-        value: item.type || item.name || item.label || item.id,
-      }))}
-      // onSelect={item => {
-      //   console.log(26, item);
-      //   // onChange(item);
-      // }}
-    />
+    <View
+      style={{
+        marginBottom: hp('2'),
+        marginTop: hp('1'),
+      }}>
+      <SelectList
+        setSelected={item => onChange(item)}
+        boxStyles={{backgroundColor: 'white'}}
+        dropdownStyles={{backgroundColor: 'white'}}
+        data={data.map(item => ({
+          key: item.id || item.value || item.name,
+          value: item.type || item.name || item.label || item.id,
+        }))}
+
+        // onSelect={item => {
+        //   console.log(26, item);
+        //   // onChange(item);
+        // }}
+      />
+    </View>
 
     // {data.map((item)=><Picker.Item label={ item.type || item.name || item.label || item.id} value={ item.id || item.value || item.name} />)}
     //         <View style={[styles.PickerViewStyle, style]}>
