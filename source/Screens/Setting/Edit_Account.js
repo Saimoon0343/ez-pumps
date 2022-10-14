@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -13,23 +13,23 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { semiBold, regular } from '../../assets/fonts';
-import { black, lightGray, primary, secondary, white } from '../../assets/colors';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {semiBold, regular} from '../../assets/fonts';
+import {black, lightGray, primary, secondary, white} from '../../assets/colors';
 import TitleRow from '../../ScreenComponent/settings/TitleRow';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import LabelInput from '../../ScreenComponent/common/LabelInput';
-import { Button } from '../../ScreenComponent/common/Button';
+import {Button} from '../../ScreenComponent/common/Button';
 import ImageLoader from '../../ScreenComponent/common/ImageLoader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { BASE_URL, fetchAPI, getToken } from '../../services';
+import {BASE_URL, fetchAPI, getToken} from '../../services';
 import Toast from 'react-native-toast-message';
 import SnackBar from '../../ScreenComponent/common/SnackBar';
-import { setItem } from '../../persist-storage';
-import { AuthContext } from '../../context';
-import { errorHandler } from '../../utils';
+import {setItem} from '../../persist-storage';
+import {AuthContext} from '../../context';
+import {errorHandler} from '../../utils';
 var FormData = require('form-data');
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 var addressVar = {
   desp: '',
@@ -66,17 +66,22 @@ class AutoComplete extends Component {
               flex: 0,
               width: widthPercentageToDP('90'),
               position: 'relative',
-              //   padding: widthPercentageToDP('6%'),
               borderWidth: 1,
               borderRadius: hp('1%'),
               marginTop: hp('1'),
               overflow: 'visible',
-              // height: hp('6'),
             },
             listView: {
               backgroundColor: '#fff',
             },
           }}
+          textInputProps={{
+            // value: addressVar.desp,
+            placeholderTextColor: 'black',
+            // onChangeText: (text) => {this.props.handleAddressOnKeyUp(text)}
+          }}
+          getDefaultValue={() => addressVar.desp}
+          value={addressVar.desp}
           //   style={{
           //     ...styles.input,
           //     listView: {
@@ -171,7 +176,7 @@ class Edit_Account extends React.Component {
   onEditPress = () => {
     const token = getToken();
     Keyboard.dismiss();
-    this.setState({ loading: true });
+    this.setState({loading: true});
     const {
       description,
       website,
@@ -194,38 +199,39 @@ class Edit_Account extends React.Component {
     data.append('lng', addressVar.region.longitude);
     fetchAPI('post', 'update-profile', data, token)
       .then(function (response) {
-        Toast.show({ text1: response.data.message });
-        that.setState({ loading: false });
+        Toast.show({text1: response.data.message});
+        that.setState({loading: false});
         if (response.data.message == 'User successfully updated.') {
           setItem('user', JSON.stringify(response.data.user));
           that.context.updateState();
         }
       })
       .catch(function (error) {
-        that.setState({ loading: false });
-        Toast.show({ text1: errorHandler(error) });
+        that.setState({loading: false});
+        Toast.show({text1: errorHandler(error)});
       });
   };
   selectImage = () => {
-    launchImageLibrary({ mediaType: 'photo', quality: 0.8 }, response => {
+    launchImageLibrary({mediaType: 'photo', quality: 0.8}, response => {
       // console.log('Response = ', response);
-
-      const coverImage = response.assets[0].uri;
-      this.setState({ coverImage });
+      if (!response?.didCancel) {
+        const coverImage = response.assets[0].uri;
+        this.setState({coverImage});
+      }
     });
   };
   renderImage() {
-    const { coverImage } = this.state;
+    const {coverImage} = this.state;
     if (!coverImage) {
       return (
         <View
           style={[
             styles.image,
-            { backgroundColor: lightGray, justifyContent: 'center' },
+            {backgroundColor: lightGray, justifyContent: 'center'},
           ]}>
           <TouchableOpacity
             onPress={this.selectImage}
-            style={{ justifyContent: 'center', alignItems: 'center' }}>
+            style={{justifyContent: 'center', alignItems: 'center'}}>
             <Icon name="image" size={44} color={secondary} />
             <Text
               style={{
@@ -255,14 +261,14 @@ class Edit_Account extends React.Component {
             }}>
             Edit
           </Text>
-          <ImageLoader source={{ uri: coverImage }} style={styles.image} />
+          <ImageLoader source={{uri: coverImage}} style={styles.image} />
         </View>
       );
     }
   }
 
   render() {
-    const { user } = this.props;
+    const {user} = this.props;
     const {
       email,
       phone_number,
@@ -279,7 +285,7 @@ class Edit_Account extends React.Component {
           Heading={'EDIT ACCOUNT'}
           BorRadius={true}
           IsBack={true}
-          style={{ zIndex: 1 }}
+          style={{zIndex: 1}}
           IsDisable={true}
         />
         <TitleRow title={user.company_name} />
@@ -292,37 +298,37 @@ class Edit_Account extends React.Component {
               blur={false}
               editable={true}
               placeholder={'Enter Email Here'}
-              onChange={text => this.setState({ email: text })}
+              onChange={text => this.setState({email: text})}
               onSubmitPress={() => this.username.focus()}
-              inputStyle={{ color: 'gray' }}
-              style={{ marginTop: hp('2%') }}
+              inputStyle={{color: 'gray'}}
+              style={{marginTop: hp('2%')}}
             />
             <LabelInput
               label={'Enter Username'}
               value={user_name}
               blur={false}
               placeholder={'Enter Username Here'}
-              onChange={text => this.setState({ user_name: text })}
+              onChange={text => this.setState({user_name: text})}
               inputRef={ref => (this.username = ref)}
               onSubmitPress={() => this.phone.focus()}
-              inputStyle={{ color: 'gray' }}
+              inputStyle={{color: 'gray'}}
             />
             <LabelInput
               label={'Enter Phone Number'}
               value={phone_number}
               blur={false}
               placeholder={'Enter Phone Number Here'}
-              onChange={text => this.setState({ phone_number: text })}
+              onChange={text => this.setState({phone_number: text})}
               inputRef={ref => (this.phone = ref)}
               onSubmitPress={() => this.address.focus()}
-              inputStyle={{ color: 'gray' }}
+              inputStyle={{color: 'gray'}}
             />
             <LabelInput
               label={'Enter Name'}
               value={company_name}
               blur={false}
               placeholder={'Enter Name Here'}
-              onChange={text => this.setState({ company_name: text })}
+              onChange={text => this.setState({company_name: text})}
               onSubmitPress={() => this.address.focus()}
             />
 
@@ -344,7 +350,7 @@ class Edit_Account extends React.Component {
               value={website}
               blur={false}
               placeholder={'Enter Website Address Here'}
-              onChange={text => this.setState({ website: text })}
+              onChange={text => this.setState({website: text})}
               inputRef={ref => (this.website = ref)}
               onSubmitPress={() => this.description.focus()}
             />
@@ -353,19 +359,19 @@ class Edit_Account extends React.Component {
               value={description}
               blur={false}
               placeholder={'Enter Description Here'}
-              onChange={text => this.setState({ description: text })}
+              onChange={text => this.setState({description: text})}
               inputRef={ref => (this.description = ref)}
               // onSubmitPress={()=>this.description.focus()}
               multiline={true}
-              inputStyle={{ minHeight: hp('15%'), textAlignVertical: 'top' }}
-              style={{ minHeight: hp('17.5%') }}
+              inputStyle={{minHeight: hp('15%'), textAlignVertical: 'top'}}
+              style={{minHeight: hp('17.5%')}}
             />
             <Button
               color={'black'}
               text={'Edit'}
               loading={loading}
               textColor={'white'}
-              style={{ width: '100%', marginTop: '2%' }}
+              style={{width: '100%', marginTop: '2%'}}
               onPress={this.onEditPress}
             />
           </ScrollView>
