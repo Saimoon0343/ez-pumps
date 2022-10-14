@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -7,6 +7,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
 import { black, primary } from '../../assets/colors';
 import { bold, regular } from '../../assets/fonts';
+import { fetchAPI } from '../../services';
 
 // componentDidMount() {
 //     AsyncStorage.getItem('Type', (err, data) => {
@@ -18,8 +19,24 @@ import { bold, regular } from '../../assets/fonts';
 //     });
 //   }
 
+
+
+
 const BuyPoints = () => {
+  const [data, setData] = useState([]);
+  const getPackages = () => {
+    fetchAPI('GET', `get-price`, null, true)
+      .then(function (response) {
+        console.log(231321, data)
+        setData(response.data)
+      })
+      .catch(function (error) {
+        Toast.show({ text1: 'Something went wrong.' });
+        deletePumpDone(dispatch, errorHandler(error));
+      });
+  }
   //   const [stripeData, setStripeData] = useState({
+
   //       clientSecret: '',
   //       stripeValue: '',
   //       packageEthValue: '0',
@@ -94,6 +111,9 @@ const BuyPoints = () => {
   //         }
   //       }
   //     };
+  useEffect(() => {
+    getPackages();
+  }, [])
   return (
     <>
       <AppHeader
@@ -106,27 +126,18 @@ const BuyPoints = () => {
 
       <View style={styles.container}>
         <Text>Select your package</Text>
-        <PackageCard
-          points={80}
-          amount={120}
-          onPress={() =>
-            this.props.navigation.navigate('PaymentForm', { type: 'Pump' })
-          }
-        />
-        <PackageCard
-          points={120}
-          amount={160}
-          onPress={() =>
-            this.props.navigation.navigate('PaymentForm', { type: 'Pump' })
-          }
-        />
-        <PackageCard
-          points={200}
-          amount={240}
-          onPress={() =>
-            this.props.navigation.navigate('PaymentForm', { type: 'Pump' })
-          }
-        />
+        {data?.length == 0 ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>loading...</Text></View> :
+          data.map(item => {
+            return (
+              <PackageCard
+                points={item?.point}
+                amount={item?.price}
+                onPress={() =>
+                  this.props.navigation.navigate('PaymentForm', { type: 'Pump' })}
+              />
+            )
+          })}
+
       </View>
     </>
   );
