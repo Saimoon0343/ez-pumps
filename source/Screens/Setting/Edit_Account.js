@@ -71,13 +71,19 @@ class AutoComplete extends Component {
               borderRadius: hp('1%'),
               marginTop: hp('1'),
               overflow: 'visible',
-              // height: hp('6'),
             },
             listView: {
 
               backgroundColor: '#fff',
             },
           }}
+          textInputProps={{
+            // value: addressVar.desp,
+            placeholderTextColor: 'black',
+            // onChangeText: (text) => {this.props.handleAddressOnKeyUp(text)}
+          }}
+          getDefaultValue={() => addressVar.desp}
+          value={addressVar.desp}
           //   style={{
           //     ...styles.input,
           //     listView: {
@@ -210,9 +216,10 @@ class Edit_Account extends React.Component {
   selectImage = () => {
     launchImageLibrary({ mediaType: 'photo', quality: 0.8 }, response => {
       // console.log('Response = ', response);
-
-      const coverImage = response.assets[0].uri;
-      this.setState({ coverImage });
+      if (!response?.didCancel) {
+        const coverImage = response.assets[0].uri;
+        this.setState({ coverImage });
+      }
     });
   };
   renderImage() {
