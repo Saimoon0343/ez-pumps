@@ -66,7 +66,8 @@ class AutoComplete extends Component {
               flex: 0,
               width: widthPercentageToDP('90'),
               position: 'relative',
-              borderWidth: 1,
+              //   padding: widthPercentageToDP('6%'),
+              borderWidth: 1.5,
               borderRadius: hp('1%'),
               marginTop: hp('1'),
               overflow: 'visible',
@@ -300,7 +301,11 @@ class Edit_Account extends React.Component {
               placeholder={'Enter Email Here'}
               onChange={text => this.setState({email: text})}
               onSubmitPress={() => this.username.focus()}
-              inputStyle={{color: 'gray'}}
+              inputStyle={{
+                borderWidth: 1.5,
+
+                color: 'black',
+              }}
               style={{marginTop: hp('2%')}}
             />
             <LabelInput
@@ -311,7 +316,11 @@ class Edit_Account extends React.Component {
               onChange={text => this.setState({user_name: text})}
               inputRef={ref => (this.username = ref)}
               onSubmitPress={() => this.phone.focus()}
-              inputStyle={{color: 'gray'}}
+              inputStyle={{
+                borderWidth: 1.5,
+
+                color: 'black',
+              }}
             />
             <LabelInput
               label={'Enter Phone Number'}
@@ -321,7 +330,11 @@ class Edit_Account extends React.Component {
               onChange={text => this.setState({phone_number: text})}
               inputRef={ref => (this.phone = ref)}
               onSubmitPress={() => this.address.focus()}
-              inputStyle={{color: 'gray'}}
+              inputStyle={{
+                borderWidth: 1.5,
+
+                color: 'black',
+              }}
             />
             <LabelInput
               label={'Enter Name'}
@@ -330,6 +343,10 @@ class Edit_Account extends React.Component {
               placeholder={'Enter Name Here'}
               onChange={text => this.setState({company_name: text})}
               onSubmitPress={() => this.address.focus()}
+              inputStyle={{
+                borderWidth: 1.5,
+                color: 'black',
+              }}
             />
 
             {/* <Text>Address</Text>
@@ -353,6 +370,10 @@ class Edit_Account extends React.Component {
               onChange={text => this.setState({website: text})}
               inputRef={ref => (this.website = ref)}
               onSubmitPress={() => this.description.focus()}
+              inputStyle={{
+                borderWidth: 1.5,
+                color: 'black',
+              }}
             />
             <LabelInput
               label={'Enter Description'}
@@ -363,7 +384,12 @@ class Edit_Account extends React.Component {
               inputRef={ref => (this.description = ref)}
               // onSubmitPress={()=>this.description.focus()}
               multiline={true}
-              inputStyle={{minHeight: hp('15%'), textAlignVertical: 'top'}}
+              inputStyle={{
+                borderWidth: 1.5,
+                color: 'black',
+                minHeight: hp('15%'),
+                textAlignVertical: 'top',
+              }}
               style={{minHeight: hp('17.5%')}}
             />
             <Button

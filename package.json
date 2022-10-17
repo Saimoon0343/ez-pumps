@@ -17,6 +17,7 @@
     "gitPush": "git push -u origin DevOnePro"
   },
   "dependencies": {
+    "@pusher/pusher-websocket-react-native": "^1.1.0",
     "@react-native-async-storage/async-storage": "^1.17.9",
     "@react-native-community/checkbox": "^0.5.12",
     "@react-native-community/datetimepicker": "^6.3.2",

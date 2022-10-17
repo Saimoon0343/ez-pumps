@@ -78,7 +78,14 @@ PODS:
   - lottie-react-native (5.1.4):
     - lottie-ios (~> 3.4.0)
     - React-Core
+  - NWWebSocket (0.5.2)
   - OpenSSL-Universal (1.1.1100)
+  - pusher-websocket-react-native (1.1.0):
+    - PusherSwift (~> 10.1.1)
+    - React
+  - PusherSwift (10.1.1):
+    - NWWebSocket (~> 0.5.2)
+    - TweetNacl (~> 1.0.0)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -411,6 +418,7 @@ PODS:
     - StripeUICore (= 22.8.3)
   - StripeUICore (22.8.3):
     - StripeCore (= 22.8.3)
+  - TweetNacl (1.0.2)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -444,6 +452,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - OpenSSL-Universal (= 1.1.1100)
+  - "pusher-websocket-react-native (from `../node_modules/@pusher/pusher-websocket-react-native`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -505,13 +514,16 @@ SPEC REPOS:
     - fmt
     - libevent
     - lottie-ios
+    - NWWebSocket
     - OpenSSL-Universal
+    - PusherSwift
     - SocketRocket
     - Stripe
     - StripeApplePay
     - StripeCore
     - StripeFinancialConnections
     - StripeUICore
+    - TweetNacl
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -527,6 +539,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   lottie-react-native:
     :path: "../node_modules/lottie-react-native"
+  pusher-websocket-react-native:
+    :path: "../node_modules/@pusher/pusher-websocket-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -634,7 +648,10 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: 9ae750cdc7820fecbd3c2f0cfc493038208fcdc4
   lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
+  NWWebSocket: 21f0c73639815da3272862c912275b26102aa80c
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
+  pusher-websocket-react-native: e3b93548fc89a85e79d68ace4c6e8a7eca80315f
+  PusherSwift: 70a805a950ab49381e164c54ac19c3b9c1d288e3
   RCT-Folly: b9d9fe1fc70114b751c076104e52f3b1b5e5a95a
   RCTRequired: bd9d2ab0fda10171fcbcf9ba61a7df4dc15a28f4
   RCTTypeSafety: e44e139bf6ec8042db396201834fc2372f6a21cd
@@ -683,9 +700,10 @@ SPEC CHECKSUMS:
   StripeCore: 7197196aa2344c5c5eaf4a1ba406950c06b1c01c
   StripeFinancialConnections: ff08ef2f655b8f577f0bf70f10b588517dfa667e
   StripeUICore: 5b635db49163d62f9aa831269031de382bcb2bbd
+  TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7c3e2d57da59a7405304305ee2f3e02c7869e475
+PODFILE CHECKSUM: 5593f966a91654876e7830dae67170dd58eb7592
 
 COCOAPODS: 1.11.3

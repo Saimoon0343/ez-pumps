@@ -7,65 +7,63 @@ import AppHeader from '../../ScreenComponent/AppHeader';
 
 const notifications = [
     {
-        id:1,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 1,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
     {
-        id:2,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 2,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
     {
-        id:3,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 3,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
     {
-        id:4,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 4,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
     {
-        id:5,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 5,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
     {
-        id:6,
-        text:'Your proposal has been accepted on Jack & Jack Company'
+        id: 6,
+        text: 'Your proposal has been accepted on Jack & Jack Company'
     },
-    
+
 ]
 
-class Notifications extends React.Component{
-    render(){
-        return(
-            <>
-                <AppHeader
-                    Heading={"NOTIFICATIONS"}
-                    IsBack={true}
-                    borderRadius={true}
-                />
-                <FlatList
-                    data={notifications}
-                    renderItem={({item,index})=>
-                        <View style={styles.card}>
-                            <Text style={styles.cardText}>{item.text}</Text>
-                        </View>
-                    }
-                />
-            </>
-        )
-    }
+const Notifications = () => {
+    return (<>
+        <AppHeader
+            Heading={"NOTIFICATIONS"}
+            IsBack={true}
+            borderRadius={true}
+        />
+        <FlatList
+            data={notifications}
+            renderItem={({ item, index }) =>
+                <View style={styles.card}>
+                    <Text style={styles.cardText}>{item.text}</Text>
+                </View>
+            }
+        />
+    </>
+    )
 }
+
 
 export default Notifications;
 
 const styles = StyleSheet.create({
-    card:{
+    card: {
         padding: hp('2%'),
         backgroundColor: white,
-        marginHorizontal:hp('3%'),
-        marginVertical:hp('1%'),
-        borderRadius:hp('1%')
+        marginHorizontal: hp('3%'),
+        marginVertical: hp('1%'),
+        borderRadius: hp('1%')
     },
-    cardText:{
+    cardText: {
         color: black,
         fontFamily: regular,
         fontSize: hp('2%')

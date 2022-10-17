@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -7,9 +7,9 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Foundation from 'react-native-vector-icons/Foundation';
-import {useNavigation} from '@react-navigation/native';
-import {primary, secondary, white} from '../assets/colors';
-import {regular, semiBold} from '../assets/fonts';
+import { useNavigation } from '@react-navigation/native';
+import { primary, secondary, white } from '../assets/colors';
+import { regular, semiBold } from '../assets/fonts';
 
 function AppHeader({
   onFilterPress,
@@ -52,7 +52,7 @@ function AppHeader({
           {/* <View style={styles.Header}>
           </View> */}
         {/* </View> */}
-        <View style={{width: wp('20')}}>
+        <View style={{ width: wp('20'), }}>
           {IsBack && (
             <Ionicons
               name="chevron-back"
@@ -75,7 +75,6 @@ function AppHeader({
               name="filter"
               color={'white'}
               size={hp('3%')}
-              //   style={{marginRight: hp('2%')}}
               onPress={Close}
             />
           )}
@@ -83,7 +82,6 @@ function AppHeader({
             <Ionicons
               name="notifications"
               color={'white'}
-              //   style={{marginRight: hp('2%')}}
               size={hp('3%')}
               onPress={() => navigation.navigate('Notifications')}
             />
@@ -135,7 +133,7 @@ function AppHeader({
   );
 }
 
-function Setting_Component({SettingName, Onpress}) {
+function Setting_Component({ SettingName, Onpress }) {
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={Onpress} style={styles.Comp}>
       <View
@@ -168,7 +166,7 @@ const styles = StyleSheet.create({
     lineHeight: hp('2.9%'),
     color: white,
     letterSpacing: 1,
-    width: wp('40'),
+    width: wp('48'),
     textAlign: 'center',
   },
   FilterContainer: {
