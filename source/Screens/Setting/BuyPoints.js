@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -21,13 +21,11 @@ import { fetchAPI } from '../../services';
 
 
 
-
-const BuyPoints = () => {
+const BuyPoints = ({ navigation }) => {
   const [data, setData] = useState([]);
   const getPackages = () => {
     fetchAPI('GET', `get-price`, null, true)
       .then(function (response) {
-        console.log(231321, data)
         setData(response.data)
       })
       .catch(function (error) {
@@ -113,6 +111,7 @@ const BuyPoints = () => {
   //     };
   useEffect(() => {
     getPackages();
+
   }, [])
   return (
     <>
@@ -125,15 +124,17 @@ const BuyPoints = () => {
       />
 
       <View style={styles.container}>
-        <Text>Select your package</Text>
-        {data?.length == 0 ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>loading...</Text></View> :
+        {data?.length == 0 ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ marginBottom: hp('7') }}>Select your package</Text>
+          <ActivityIndicator color={'red'} size={hp('6')} />
+        </View> :
           data.map(item => {
             return (
               <PackageCard
                 points={item?.point}
                 amount={item?.price}
                 onPress={() =>
-                  this.props.navigation.navigate('PaymentForm', { type: 'Pump' })}
+                  navigation.navigate('PaymentForm', { type: 'Pump' })}
               />
             )
           })}
