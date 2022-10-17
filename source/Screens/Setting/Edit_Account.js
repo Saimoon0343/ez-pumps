@@ -402,6 +402,7 @@ class Edit_Account extends React.Component {
             />
           </ScrollView>
         </View>
+
         <SnackBar position={'bottom'} />
       </>
     );
