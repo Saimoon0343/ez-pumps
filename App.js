@@ -26,7 +26,7 @@
 //   }
 // }
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Platform,
   StyleSheet,
@@ -34,12 +34,12 @@ import {
   StatusBar,
   LogBox,
 } from 'react-native';
-import { store } from './source/Redux/store';
-import { Provider } from 'react-redux';
-import { primary } from './source/assets/colors';
+import {store} from './source/Redux/store';
+import {Provider} from 'react-redux';
+import {primary} from './source/assets/colors';
 import Routes from './source/Routes';
-import FlashMessage from "react-native-flash-message";
-function App({ navigation }) {
+import FlashMessage from 'react-native-flash-message';
+function App({navigation}) {
   const [isVisible, setIsVisible] = useState(true);
   const Hide_Splash_Screen = () => {
     setIsVisible(false);
@@ -74,7 +74,7 @@ function App({ navigation }) {
       ) : (
         <>
           <Provider store={store}>
-            <FlashMessage position="top" />
+            <FlashMessage position="bottom" />
             <Routes />
           </Provider>
         </>
