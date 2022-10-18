@@ -38,7 +38,7 @@ import { store } from './source/Redux/store';
 import { Provider } from 'react-redux';
 import { primary } from './source/assets/colors';
 import Routes from './source/Routes';
-
+import FlashMessage from "react-native-flash-message";
 function App({ navigation }) {
   const [isVisible, setIsVisible] = useState(true);
   const Hide_Splash_Screen = () => {
@@ -74,6 +74,7 @@ function App({ navigation }) {
       ) : (
         <>
           <Provider store={store}>
+            <FlashMessage position="top" />
             <Routes />
           </Provider>
         </>

@@ -8,6 +8,7 @@ import AppHeader from '../../ScreenComponent/AppHeader';
 import { black, primary } from '../../assets/colors';
 import { bold, regular } from '../../assets/fonts';
 import { fetchAPI } from '../../services';
+import Toast from 'react-native-toast-message';
 
 // componentDidMount() {
 //     AsyncStorage.getItem('Type', (err, data) => {
@@ -23,6 +24,9 @@ import { fetchAPI } from '../../services';
 
 const BuyPoints = ({ navigation }) => {
   const [data, setData] = useState([]);
+
+
+
   const getPackages = () => {
     fetchAPI('GET', `get-price`, null, true)
       .then(function (response) {
@@ -33,6 +37,8 @@ const BuyPoints = ({ navigation }) => {
         deletePumpDone(dispatch, errorHandler(error));
       });
   }
+
+
   //   const [stripeData, setStripeData] = useState({
 
   //       clientSecret: '',
@@ -109,8 +115,14 @@ const BuyPoints = ({ navigation }) => {
   //         }
   //       }
   //     };
+
   useEffect(() => {
     getPackages();
+    Toast.show({
+      type: 'success',
+      text1: 'Hello',
+      text2: 'This is some something 👋'
+    });
 
   }, [])
   return (
@@ -129,6 +141,7 @@ const BuyPoints = ({ navigation }) => {
           <ActivityIndicator color={'red'} size={hp('6')} />
         </View> :
           data.map(item => {
+
             return (
               <PackageCard
                 points={item?.point}
