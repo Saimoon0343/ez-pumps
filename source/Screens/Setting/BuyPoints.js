@@ -118,11 +118,7 @@ const BuyPoints = ({ navigation }) => {
 
   useEffect(() => {
     getPackages();
-    Toast.show({
-      type: 'success',
-      text1: 'Hello',
-      text2: 'This is some something 👋'
-    });
+
 
   }, [])
   return (
@@ -147,7 +143,7 @@ const BuyPoints = ({ navigation }) => {
                 points={item?.point}
                 amount={item?.price}
                 onPress={() =>
-                  navigation.navigate('PaymentForm', { type: 'Pump' })}
+                  navigation.navigate('PaymentForm', item?.id, { type: 'Pump' })}
               />
             )
           })}

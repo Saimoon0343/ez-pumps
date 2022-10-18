@@ -21,25 +21,27 @@ export default class PaymentForm extends Component {
     super(props);
     this.state = {
       // CardHolderName: '4242424242424242',
-      Card_Number: '4242424242424242',
-      Exp_Month: '01',
-      Exp_Year: '23',
-      CVV: '114',
+      Card_Number: '',
+      Exp_Month: '',
+      Exp_Year: '',
+      CVV: '',
       saved: false,
     };
   }
   componentDidMount() {
+
     // console.log('payment form',this.props.navigation.getState().routes[0].state.history[0].key.split('-')[0])
   }
 
   hitStripeAPi = () => {
+
     const { Card_Number, Exp_Month, Exp_Year, CVV } = this.state
     var cardno = /^5[1-5][0-9]{14}$|^2(?:2(?:2[1-9]|[3-9][0-9])|[3-6][0-9][0-9]|7(?:[01][0-9]|20))[0-9]{12}$/;
     var today, someday;
     today = new Date();
     someday = new Date();
     someday.setFullYear(Exp_Year, Exp_Month, 1);
-    if (Card_Number.match(cardno) && someday < today) {
+    if (Card_Number.match(cardno) && someday < today && Card_Number != null && Card_Number != '' && Exp_Month != null && Exp_Month != '' && Exp_Year != null && Exp_Year != '' && CVV != null && CVV != '') {
 
       var data = new FormData();
       data.append('price_id', 1);
@@ -180,7 +182,6 @@ export default class PaymentForm extends Component {
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.btn}
-              // onPress={() => this.props.navigation.navigate('PaymentMethod')}
               onPress={this.hitStripeAPi}
             >
               <Text style={[styles.Txt, { color: '#FFFFFF', marginTop: 0 }]}>
@@ -188,7 +189,7 @@ export default class PaymentForm extends Component {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => this.setState({ saved: !this.state.saved })}
               style={{
                 flexDirection: 'row',
@@ -218,7 +219,7 @@ export default class PaymentForm extends Component {
                   ? 'Your Card Saved'
                   : 'Do You Want to Save card for future payments'}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </ScrollView>
         </View>
       </>
