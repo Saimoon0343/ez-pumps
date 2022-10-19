@@ -414,6 +414,7 @@ const mapStateToProps = state => {
   return {
     user: state.authReducer.user,
   };
+
 };
 
 Edit_Account.contextType = AuthContext;

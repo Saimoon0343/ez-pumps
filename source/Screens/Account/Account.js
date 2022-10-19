@@ -115,6 +115,7 @@ class Account extends Component {
     try {
       fetchAPI('GET', 'get-profile-info', null, token)
         .then(res => {
+          console.log(184848, res)
           this.setState({ user: res?.data?.profile });
           this.setState({ ReviewObj: res?.data?.profile?.get_reviews });
         })

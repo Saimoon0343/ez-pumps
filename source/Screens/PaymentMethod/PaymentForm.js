@@ -41,7 +41,7 @@ export default class PaymentForm extends Component {
     today = new Date();
     someday = new Date();
     someday.setFullYear(Exp_Year, Exp_Month, 1);
-    if (Card_Number.match(cardno) && someday < today && Card_Number != null && Card_Number != '' && Exp_Month != null && Exp_Month != '' && Exp_Year != null && Exp_Year != '' && CVV != null && CVV != '') {
+    if (Card_Number.length == 16 && someday < today && Card_Number != null && Card_Number != '' && Exp_Month != null && Exp_Month != '' && Exp_Year != null && Exp_Year != '' && CVV != null && CVV != '') {
 
       var data = new FormData();
       data.append('price_id', 1);
@@ -59,7 +59,7 @@ export default class PaymentForm extends Component {
         });
     }
     else {
-      console.log('lkasjdlfjaskl')
+      console.log('lkasjdlfjaskl');
       errorMessage('Please type correct information')
 
     }
