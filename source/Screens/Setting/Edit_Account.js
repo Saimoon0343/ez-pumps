@@ -424,6 +424,7 @@ const mapStateToProps = state => {
   return {
     user: state.authReducer.user,
   };
+
 };
 
 const mapDispatchToProps = dispatch => {

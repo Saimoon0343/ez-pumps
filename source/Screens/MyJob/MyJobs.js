@@ -103,7 +103,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    userType: state.authReducer.user.user_type,
+    userType: state.authReducer.user?.user_type,
     failed: state.jobReducer.failed,
     loading: state.jobReducer.loading,
   };

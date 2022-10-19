@@ -47,7 +47,7 @@ const Tab = createBottomTabNavigator();
 
 function TabNavigator(props) {
   const type = useSelector(state => {
-    state.authReducer.user.user_type;
+    return state.authReducer.user?.user_type;
   });
 
   return (
