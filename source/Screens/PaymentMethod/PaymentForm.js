@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
@@ -18,54 +19,88 @@ import {
   errorMessage,
   successMessage,
 } from '../../ScreenComponent/NotificationMessage';
+import {useDispatch} from 'react-redux';
+import {UPDATE_USER_DATA} from '../../Redux/Constants';
+import {updateUserData} from '../../Redux/Action/AuthAction';
+import {AuthContext} from '../../context';
+import {connect} from 'react-redux';
+import {setItem} from '../../persist-storage';
 
-export default class PaymentForm extends Component {
+class PaymentForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // CardHolderName: '4242424242424242',
-      Card_Number: '4242424242424242',
-      Exp_Month: '01',
-      Exp_Year: '23',
-      CVV: '114',
+      Card_Number: '',
+      Exp_Month: '',
+      Exp_Year: '',
+      CVV: '',
       saved: false,
+      isloading: false,
     };
+    this.hitStripeAPi = this.hitStripeAPi.bind(this);
   }
   componentDidMount() {
     // console.log('payment form',this.props.navigation.getState().routes[0].state.history[0].key.split('-')[0])
   }
 
   hitStripeAPi = () => {
+    this.setState({
+      isloading: true,
+    });
     const {Card_Number, Exp_Month, Exp_Year, CVV} = this.state;
-    const {navigation} = this.props;
-    // var cardno = Card_Number;
+    const {navigation, updateUserData} = this.props;
     var cardno =
       /^5[1-5][0-9]{14}$|^2(?:2(?:2[1-9]|[3-9][0-9])|[3-6][0-9][0-9]|7(?:[01][0-9]|20))[0-9]{12}$/;
     var today, someday;
     today = new Date();
     someday = new Date();
     someday.setFullYear(Exp_Year, Exp_Month, 1);
-    if (Card_Number.match(cardno) && someday < today) {
+    if (
+      Card_Number.length == 16 &&
+      someday < today &&
+      Card_Number != null &&
+      Card_Number != '' &&
+      Exp_Month != null &&
+      Exp_Month != '' &&
+      Exp_Year != null &&
+      Exp_Year != '' &&
+      CVV != null &&
+      CVV != ''
+    ) {
       var data = new FormData();
       data.append('price_id', this.props.route.params.id);
       data.append('card_no', Card_Number);
       data.append('cc_expiry_month', Exp_Month);
       data.append('cc_expiry_year', Exp_Year);
       data.append('cvv_number', CVV);
-
+      // const {updateUserData} = this.props;
       fetchAPI('post', 'payment', data, true)
         .then(function (response) {
-          navigation.navigate('PaymentMethod');
-          console.log(57);
+          updateUserData(response.data.data);
+          setItem('user', JSON.stringify(response.data.data));
+          navigation.goBack();
+          console.log(72, response.data.data);
+          this.setState({
+            isloading: false,
+          });
+
+          // this.context.updateState();
+          successMessage('Your payment haa been completed');
         })
         .catch(function (error) {
+          console.log(89, error);
           errorMessage(error.message);
-          console.log(190, error);
+          this.setState({
+            isloading: false,
+          });
         });
     } else {
-      console.log('lkasjdlfjaskl');
       Toast.show({text1: 'Please type correct information'});
       errorMessage('Please type correct information');
+      this.setState({
+        isloading: false,
+      });
     }
   };
 
@@ -180,16 +215,22 @@ export default class PaymentForm extends Component {
                 />
               </View>
             </View>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.btn}
-              // onPress={() => this.props.navigation.navigate('PaymentMethod')}
-              onPress={this.hitStripeAPi}>
-              <Text style={[styles.Txt, {color: '#FFFFFF', marginTop: 0}]}>
-                CONTINUE
-              </Text>
-            </TouchableOpacity>
+            {this.state.isloading ? (
+              <ActivityIndicator
+                color={'red'}
+                size={'large'}
+                style={{marginTop: hp('2')}}
+              />
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={this.hitStripeAPi}>
+                <Text style={[styles.Txt, {color: '#FFFFFF', marginTop: 0}]}>
+                  CONTINUE
+                </Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               onPress={() => this.setState({saved: !this.state.saved})}
@@ -228,6 +269,22 @@ export default class PaymentForm extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUserData: val => dispatch(updateUserData(val)),
+  };
+};
+
+PaymentForm.contextType = AuthContext;
+
+// export default PaymentForm;
+export default connect(null, mapDispatchToProps)(PaymentForm);
 
 const styles = StyleSheet.create({
   main: {

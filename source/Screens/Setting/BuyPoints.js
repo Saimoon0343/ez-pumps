@@ -119,11 +119,6 @@ const BuyPoints = ({navigation}) => {
 
   useEffect(() => {
     getPackages();
-    Toast.show({
-      type: 'success',
-      text1: 'Hello',
-      text2: 'This is some something 👋',
-    });
   }, []);
   return (
     <>

@@ -30,6 +30,8 @@ import {AuthContext} from '../../context';
 import {errorHandler} from '../../utils';
 var FormData = require('form-data');
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {updateUserData, setAbcVal} from '../../Redux/Action/AuthAction';
+import {UPDATE_USER_DATA} from '../../Redux/Constants';
 
 var addressVar = {
   desp: '',
@@ -198,16 +200,23 @@ class Edit_Account extends React.Component {
     data.append('address', addressVar.desp);
     data.append('lat', addressVar.region.latitude);
     data.append('lng', addressVar.region.longitude);
+
+    const {updateUserData} = this.props;
     fetchAPI('post', 'update-profile', data, token)
       .then(function (response) {
+        console.log('res ===> ', response.data);
+
         Toast.show({text1: response.data.message});
         that.setState({loading: false});
         if (response.data.message == 'User successfully updated.') {
           setItem('user', JSON.stringify(response.data.user));
-          that.context.updateState();
+          updateUserData(response.data.user);
+
+          // this.props.updateUserData();
         }
       })
       .catch(function (error) {
+        console.log('exception =====>', error);
         that.setState({loading: false});
         Toast.show({text1: errorHandler(error)});
       });
@@ -291,6 +300,8 @@ class Edit_Account extends React.Component {
         />
         <TitleRow title={user.company_name} />
         <View style={styles.main}>
+          {console.log('here body=====>', this.props.abc)}
+          {console.log('here body=====>', this.props.user.user_name)}
           <ScrollView showsVerticalScrollIndicator={false}>
             {this.renderImage()}
             <LabelInput
@@ -415,9 +426,15 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUserData: val => dispatch(updateUserData(val)),
+  };
+};
+
 Edit_Account.contextType = AuthContext;
 
-export default connect(mapStateToProps, null)(Edit_Account);
+export default connect(mapStateToProps, mapDispatchToProps)(Edit_Account);
 
 const styles = StyleSheet.create({
   image: {
