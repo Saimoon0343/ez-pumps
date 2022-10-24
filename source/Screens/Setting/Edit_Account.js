@@ -208,9 +208,10 @@ class Edit_Account extends React.Component {
 
         Toast.show({text1: response.data.message});
         that.setState({loading: false});
-        if (response.data.message == 'User successfully updated.') {
-          setItem('user', JSON.stringify(response.data.user));
-          updateUserData(response.data.user);
+        console.log(211, response.data);
+        if (response.status == 200) {
+          updateUserData(response.data.data);
+          setItem('user', JSON.stringify(response.data.data));
 
           // this.props.updateUserData();
         }
@@ -300,7 +301,6 @@ class Edit_Account extends React.Component {
         />
         <TitleRow title={user.company_name} />
         <View style={styles.main}>
-          {console.log('here body=====>', this.props.abc)}
           {console.log('here body=====>', this.props.user.user_name)}
           <ScrollView showsVerticalScrollIndicator={false}>
             {this.renderImage()}
@@ -347,7 +347,7 @@ class Edit_Account extends React.Component {
                 color: 'black',
               }}
             />
-            <LabelInput
+            {/* <LabelInput
               label={'Enter Name'}
               value={company_name}
               blur={false}
@@ -358,7 +358,7 @@ class Edit_Account extends React.Component {
                 borderWidth: 1.5,
                 color: 'black',
               }}
-            />
+            /> */}
 
             {/* <Text>Address</Text>
                         <LabelInput
@@ -424,7 +424,6 @@ const mapStateToProps = state => {
   return {
     user: state.authReducer.user,
   };
-
 };
 
 const mapDispatchToProps = dispatch => {

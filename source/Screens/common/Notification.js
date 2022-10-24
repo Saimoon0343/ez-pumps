@@ -1,71 +1,80 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { black, white } from '../../assets/colors';
-import { regular } from '../../assets/fonts';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
+import {black, white} from '../../assets/colors';
+import {regular} from '../../assets/fonts';
 import AppHeader from '../../ScreenComponent/AppHeader';
-
-const notifications = [
-    {
-        id: 1,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-    {
-        id: 2,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-    {
-        id: 3,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-    {
-        id: 4,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-    {
-        id: 5,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-    {
-        id: 6,
-        text: 'Your proposal has been accepted on Jack & Jack Company'
-    },
-
-]
+import {fetchAPI} from '../../services';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Notifications = () => {
-    return (<>
-        <AppHeader
-            Heading={"NOTIFICATIONS"}
-            IsBack={true}
-            borderRadius={true}
-        />
-        <FlatList
-            data={notifications}
-            renderItem={({ item, index }) =>
-                <View style={styles.card}>
-                    <Text style={styles.cardText}>{item.text}</Text>
-                </View>
-            }
-        />
+  const [notification, setNotification] = useState([]);
+  const getNotification = () => {
+    fetchAPI('GET', 'get-notifications', null, true)
+      .then(res => {
+        setNotification(res.data.data);
+      })
+      .catch(err => {
+        console.log(41, err);
+      });
+  };
+  const deleteNotification = data => {
+    console.log(25, data);
+    fetchAPI('DELETE', `delete-notification/${data.id}`, null, true)
+      .then(res => {
+        setNotification(res.data.data);
+      })
+      .catch(err => {
+        console.log(41, err);
+      });
+  };
+  useEffect(() => {
+    getNotification();
+  }, []);
+  return (
+    <>
+      <AppHeader Heading={'NOTIFICATIONS'} IsBack={true} borderRadius={true} />
+      <FlatList
+        data={notification}
+        renderItem={({item, index}) => {
+          return (
+            <View style={styles.card}>
+              <Text style={styles.cardText}>{item.message}</Text>
+              <Ionicons
+                onPress={() => deleteNotification(item)}
+                name="ios-trash-outline"
+                color={'red'}
+                size={hp('3')}
+                style={{
+                  marginLeft: 'auto',
+                  marginRight: widthPercentageToDP('2'),
+                }}
+              />
+            </View>
+          );
+        }}
+      />
     </>
-    )
-}
-
+  );
+};
 
 export default Notifications;
 
 const styles = StyleSheet.create({
-    card: {
-        padding: hp('2%'),
-        backgroundColor: white,
-        marginHorizontal: hp('3%'),
-        marginVertical: hp('1%'),
-        borderRadius: hp('1%')
-    },
-    cardText: {
-        color: black,
-        fontFamily: regular,
-        fontSize: hp('2%')
-    }
-})
+  card: {
+    padding: hp('2%'),
+    backgroundColor: white,
+    marginHorizontal: hp('3%'),
+    marginVertical: hp('1%'),
+    borderRadius: hp('1%'),
+    flexDirection: 'row',
+  },
+  cardText: {
+    color: black,
+    fontFamily: regular,
+    fontSize: hp('2%'),
+  },
+});

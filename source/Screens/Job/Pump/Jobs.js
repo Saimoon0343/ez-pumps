@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, StatusBar, Text } from 'react-native';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import React, {Component} from 'react';
+import {View, StyleSheet, StatusBar, Text} from 'react-native';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AppHeader from '../../../ScreenComponent/AppHeader';
 import JobsFilter from '../../../ScreenComponent/JobsFilter';
 import JobList from './JobList';
-import { primary, white } from '../../../assets/colors';
+import {primary, white} from '../../../assets/colors';
 import FilterModal from '../../../ScreenComponent/FilterModal';
 // import { distanceFilterData } from '../../../utils/RawData';
-import { connect } from 'react-redux';
-import { changeJobsFilter } from '../../../Redux/Action/JobAction';
-import { loadPumps } from '../../../Redux/Action/PumpAction';
-
+import {connect} from 'react-redux';
+import {changeJobsFilter} from '../../../Redux/Action/JobAction';
+import {loadPumps} from '../../../Redux/Action/PumpAction';
 
 class Jobs extends Component {
   constructor(props) {
@@ -28,9 +27,9 @@ class Jobs extends Component {
   }
 
   onFilterPress = filterText => {
-    const { jobsFilter } = this.props;
+    const {jobsFilter} = this.props;
     var filterValue;
-    console.log(33, filterText)
+    console.log(33, filterText);
     if (filterText == 'State') {
       filterValue = jobsFilter.states;
     } else if (filterText == 'Pump Type') {
@@ -38,17 +37,17 @@ class Jobs extends Component {
     } else {
       filterValue = jobsFilter.jobType;
     }
-    this.setState({ filterValue, filterType: filterText, filterVisible: true });
+    this.setState({filterValue, filterType: filterText, filterVisible: true});
   };
 
   onFilterSubmitPress = val => {
-    this.setState({ filterVisible: false });
+    this.setState({filterVisible: false});
     if (!val.id) {
       return;
     }
-    const { filterType } = this.state;
-    const { jobsFilter } = this.props;
-    console.log(231, jobsFilter)
+    const {filterType} = this.state;
+    const {jobsFilter} = this.props;
+    console.log(231, jobsFilter);
     if (filterType == 'State') {
       if (val.id == jobsFilter.states.id) {
         return;
@@ -70,42 +69,34 @@ class Jobs extends Component {
     this.jobsListRef.current();
   };
   renderFilterData = () => {
-    const { filterType } = this.state;
-    const { jobTypes, pumpTypes, pump_form_info } = this.props;
+    const {filterType} = this.state;
+    const {jobTypes, pumpTypes, pump_form_info} = this.props;
     const distanceFilterData = pump_form_info;
     // const pumpTypes = pump_form_info?.pump_types;
     // const distanceFilterData = distanceFilterData1.map(item => item?.name);
-    console.log(74, distanceFilterData)
     if (filterType == 'State') {
-      console.log(79, filterType)
       return pump_form_info?.states;
     } else if (filterType == 'Pump Type') {
-      console.log(82, filterType)
       return pump_form_info?.pump_types;
     } else {
-      console.log(83, filterType)
       return pump_form_info?.job_types;
     }
   };
 
-
   render() {
-    const { filterType, filterVisible } = this.state;
-    const { jobsFilter, pump_form_info } = this.props;
+    const {filterType, filterVisible} = this.state;
+    const {jobsFilter, pump_form_info} = this.props;
     return (
       <>
         <StatusBar barStyle="light-content" />
         <AppHeader Heading={'JOBS'} borderRadius notification />
         <View style={styles.main}>
-
-
           <JobList
             navigation={this.props.navigation}
             jobsListRef={this.jobsListRef}
           />
 
           <View style={styles.FilterContainer}>
-            {console.log(jobsFilter, 546546)}
             {/* <JobsFilter
               FilterName="Distance"
               Type={jobsFilter.distance.type_name || 'Any'}
@@ -137,7 +128,7 @@ class Jobs extends Component {
           <FilterModal
             heading={filterType}
             isVisible={filterVisible}
-            onBackPress={() => this.setState({ filterVisible: false })}
+            onBackPress={() => this.setState({filterVisible: false})}
             // value={this.renderFilterValue()}
             value={this.state.filterValue}
             data={this.renderFilterData()}

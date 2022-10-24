@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -14,15 +14,16 @@ import {
 import AppHeader from '../../ScreenComponent/AppHeader';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
-import { bold, regular, semiBold } from '../../assets/fonts';
-import { connect } from 'react-redux';
+import {bold, regular, semiBold} from '../../assets/fonts';
+import {connect} from 'react-redux';
 import PointsBlock from '../../ScreenComponent/account/PointsBlock';
 import AccountDetailText from '../../ScreenComponent/account/AccountDetailText';
-import { BASE_URL, fetchAPI, getToken } from '../../services/index';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {BASE_URL, fetchAPI, getToken} from '../../services/index';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import moment from 'moment/moment';
+import {useFocusEffect} from '@react-navigation/native';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 var address = {
   desp: '',
@@ -109,18 +110,65 @@ class Account extends Component {
   };
   componentDidMount() {
     this.callData();
+    const {isFocused} = this.props.navigation;
+    console.log(23456789, isFocused);
+    if (isFocused) {
+      this.callData();
+      console.log(141, this.state.user);
+    } else {
+      console.log(117);
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.user.address != this.state.user.address ||
+      prevState.user.company_name != this.state.user.company_name ||
+      prevState.user.cover_image != this.state.user.cover_image ||
+      prevState.user.description != this.state.user.description ||
+      prevState.user.email != this.state.user.email ||
+      prevState.user.lat != this.state.user.lat ||
+      prevState.user.lng != this.state.user.lng ||
+      prevState.user.phone_number != this.state.user.phone_number ||
+      prevState.user.points != this.state.user.points ||
+      prevState.user.user_name != this.state.user.user_name ||
+      prevState.user.user_type != this.state.user.user_type ||
+      prevState.user.website != this.state.user.website
+    ) {
+      this.callData();
+    }
+    this.callData();
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      nextState.user.address != this.state.user.address ||
+      nextState.user.company_name != this.state.user.company_name ||
+      nextState.user.cover_image != this.state.user.cover_image ||
+      nextState.user.description != this.state.user.description ||
+      nextState.user.email != this.state.user.email ||
+      nextState.user.lat != this.state.user.lat ||
+      nextState.user.lng != this.state.user.lng ||
+      nextState.user.phone_number != this.state.user.phone_number ||
+      nextState.user.points != this.state.user.points ||
+      nextState.user.user_name != this.state.user.user_name ||
+      nextState.user.user_type != this.state.user.user_type ||
+      nextState.user.website != this.state.user.website
+    ) {
+      this.callData();
+      return true;
+    }
+    this.callData();
+    return false;
   }
   callData = async () => {
     const token = await getToken();
     try {
       fetchAPI('GET', 'get-profile-info', null, token)
         .then(res => {
-          console.log(184848, res)
-          this.setState({ user: res?.data?.profile });
-          this.setState({ ReviewObj: res?.data?.profile?.get_reviews });
+          this.setState({user: res?.data?.profile});
+          this.setState({ReviewObj: res?.data?.profile?.get_reviews});
         })
-        .catch(() => { });
-    } catch (error) { }
+        .catch(() => {});
+    } catch (error) {}
   };
 
   renderContent = () => {
@@ -163,14 +211,14 @@ class Account extends Component {
                 />
               );
             })}
-          <View style={{ height: hp('5%') }} />
+          <View style={{height: hp('5%')}} />
         </ScrollView>
       </View>
     );
   };
 
   renderTitle = () => {
-    const { company_name } = this.state.user;
+    const {company_name} = this.state.user;
     return (
       <>
         <Text style={styles.NameTxt}>{company_name}</Text>
@@ -188,21 +236,21 @@ class Account extends Component {
   };
 
   renderImage() {
-    const { cover_image } = this.state?.user;
+    const {cover_image} = this.state?.user;
 
     if (cover_image) {
-      return { uri: `${BASE_URL}${cover_image}` };
+      return {uri: `${BASE_URL}${cover_image}`};
     } else {
       return require('../../assets/images/coverimage2.png');
     }
   }
 
   render() {
-    const { cover_image } = this.state?.user;
+    const {cover_image} = this.state?.user;
     return (
       <>
         <StatusBar barStyle="light-content" />
-        <AppHeader Heading={'ACCOUNT'} style={{ zIndex: 1 }} />
+        <AppHeader Heading={'ACCOUNT'} style={{zIndex: 1}} />
         <ReactNativeParallaxHeader
           headerMinHeight={HEADER_HEIGHT}
           headerMaxHeight={hp('29')}
@@ -229,18 +277,18 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, null)(Account);
 
-function Reviews({ NameTxt, Review_Description, Review }) {
+function Reviews({NameTxt, Review_Description, Review}) {
   return (
     <View style={styles.Container}>
       <View style={styles.Top}>
-        <Text style={[styles.Heading, { marginTop: 0 }]}> {NameTxt} </Text>
+        <Text style={[styles.Heading, {marginTop: 0}]}> {NameTxt} </Text>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Text style={[styles.RateTxt, { color: '#000000' }]}>{Review}</Text>
+          <Text style={[styles.RateTxt, {color: '#000000'}]}>{Review}</Text>
           <FontAwesome name="star" color={'#BCD221'} size={hp('2.5%')} />
         </View>
       </View>
@@ -293,7 +341,7 @@ const styles = StyleSheet.create({
     shadowColor: '#00000029',
     shadowRadius: 3,
     shadowOpacity: 4,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     elevation: 4,
     padding: hp('1.4%'),
   },

@@ -25,7 +25,7 @@ import {updateUserData} from '../../Redux/Action/AuthAction';
 import {AuthContext} from '../../context';
 import {connect} from 'react-redux';
 import {setItem} from '../../persist-storage';
-
+var isloading = false;
 class PaymentForm extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +37,7 @@ class PaymentForm extends Component {
       CVV: '',
       saved: false,
       isloading: false,
+      changeString: '',
     };
     this.hitStripeAPi = this.hitStripeAPi.bind(this);
   }
@@ -45,9 +46,11 @@ class PaymentForm extends Component {
   }
 
   hitStripeAPi = () => {
-    this.setState({
-      isloading: true,
-    });
+    // this.setState({
+    // });
+    isloading = true;
+    console.log('Check State =====>', isloading);
+
     const {Card_Number, Exp_Month, Exp_Year, CVV} = this.state;
     const {navigation, updateUserData} = this.props;
     var cardno =
@@ -80,10 +83,9 @@ class PaymentForm extends Component {
           updateUserData(response.data.data);
           setItem('user', JSON.stringify(response.data.data));
           navigation.goBack();
-          console.log(72, response.data.data);
-          this.setState({
-            isloading: false,
-          });
+          console.log('Check State =====>', isloading);
+
+          isloading = false;
 
           // this.context.updateState();
           successMessage('Your payment haa been completed');
@@ -91,16 +93,14 @@ class PaymentForm extends Component {
         .catch(function (error) {
           console.log(89, error);
           errorMessage(error.message);
-          this.setState({
-            isloading: false,
-          });
+          console.log('Check State =====>', isloading);
+
+          isloading = false;
         });
     } else {
       Toast.show({text1: 'Please type correct information'});
       errorMessage('Please type correct information');
-      this.setState({
-        isloading: false,
-      });
+      isloading = false;
     }
   };
 
@@ -135,13 +135,28 @@ class PaymentForm extends Component {
               ref={ref => {
                 this.NextInput = ref;
               }}
-              value={this.state.Card_Number}
-              onChangeText={text => this.setState({Card_Number: text})}
+              value={this.state.changeString}
+              onChangeText={text => {
+                this.setState({Card_Number: text});
+                // this.setState({changeString: text});
+                this.setState({
+                  changeString: text
+                    .replace(/\s?/g, '')
+                    .replace(/(\d{4})/g, '$1 ')
+                    .trim(),
+                });
+                // number.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim()
+                // if (this.state.changeString.length == 15) {
+                //   var parts = text.match(/.{1,4}/g);
+                //   var new_value = parts.join('-');
+                //   this.setState({changeString: new_value});
+                // }
+              }}
               placeholder={'3489-7596-1234-4686'}
               style={styles.InputStyle}
               keyboardType="decimal-pad"
               onSubmitEditing={() => this.NextInput2.focus()}
-              maxLength={16}
+              maxLength={19}
               blurOnSubmit={false}
             />
 
@@ -215,7 +230,7 @@ class PaymentForm extends Component {
                 />
               </View>
             </View>
-            {this.state.isloading ? (
+            {isloading == true ? (
               <ActivityIndicator
                 color={'red'}
                 size={'large'}
