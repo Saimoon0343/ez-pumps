@@ -29,6 +29,9 @@ class My_Jobs extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.loadMyJobs();
+  }
   onRefresh = () => {
     this.setState({refreshing: true});
     this.props.loadMyJobs();

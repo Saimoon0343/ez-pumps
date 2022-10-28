@@ -49,7 +49,7 @@ class Find_Job extends Component {
   renderSections = () => {
     const isCompany = this.props.userType == 'company';
     const {job} = this.props.route.params;
-
+    console.log(52, job);
     if (this.props.ScreenType == 'applied') {
       return (
         <View
@@ -64,7 +64,7 @@ class Find_Job extends Component {
           ]}>
           <Text style={styles.DesTxt}> Job Description </Text>
           <Text style={[styles.DesTxt, {marginBottom: hp('2%')}]}>
-            {job.get_job_detail.description}
+            {job?.get_job_detail?.description}
           </Text>
           <Job_Pending />
         </View>
@@ -76,7 +76,7 @@ class Find_Job extends Component {
         />
       );
     } else if (this.props.ScreenType == 'completed') {
-      const id = job.pump_id;
+      const id = job?.pump_id;
       return (
         <Job_Completed
           onPress={() => this.setState({Show_Modal: true})}
@@ -86,7 +86,7 @@ class Find_Job extends Component {
         />
       );
     } else if (this.props.ScreenType == 'cancelled') {
-      const id = job.job_request.pump_id;
+      const id = job?.pump_id;
       return (
         <Job_Cancelled
           pump={job?.pump}
@@ -95,7 +95,7 @@ class Find_Job extends Component {
         />
       );
     } else if (this.props.ScreenType == 'inprogress') {
-      const id = job.pump_id;
+      const id = job?.pump_id;
       return (
         <Jop_InProcess
           isCompany={isCompany}
@@ -141,7 +141,9 @@ class Find_Job extends Component {
             <View style={styles.First}>
               <View style={styles.miniContainer}>
                 <Text style={[styles.Txt, {marginTop: hp('2%')}]}>
-                  {type == 'inprogress' ? `${job.address_1}}` : 'Private'}
+                  {type == 'inprogress'
+                    ? `${job?.get_job_detail?.address_1}`
+                    : 'Private'}
                 </Text>
                 <Text style={[styles.Txt, {fontFamily: regular}]}>{}</Text>
                 <View style={styles.ImageCont}>
@@ -153,8 +155,9 @@ class Find_Job extends Component {
                 </View>
               </View>
               <View style={styles.miniContainer}>
-                <Text style={styles.Txt}>{job?.date_and_time}</Text>
-                {/*<Text style={[styles.Txt, {fontFamily:regular}]} >On Site {job.job_detail.time}</Text>*/}
+                <Text style={styles.Txt}>
+                  {job?.get_job_detail?.date_and_time}
+                </Text>
                 <View style={styles.ImageCont}>
                   <AntDesign name="calendar" color={white} size={hp('3%')} />
                 </View>
@@ -168,13 +171,17 @@ class Find_Job extends Component {
                 <Text style={[styles.Txt, {fontFamily: regular}]}>
                   Job Type
                 </Text>
-                <Text style={styles.Txt}>{job?.get_job_type.type}</Text>
+                <Text style={styles.Txt}>
+                  {job?.get_job_detail?.get_job_type?.type}
+                </Text>
               </View>
               <View style={styles.miniContainer}>
                 <Text style={[styles.Txt, {fontFamily: regular}]}>
                   Pump Type
                 </Text>
-                <Text style={styles.Txt}>{job?.get_pump_type.name}</Text>
+                <Text style={styles.Txt}>
+                  {job?.get_job_detail?.get_pump_type?.name}
+                </Text>
               </View>
             </View>
 
@@ -183,15 +190,17 @@ class Find_Job extends Component {
                 <Text style={[styles.Txt, {fontFamily: regular}]}>
                   Line Length
                 </Text>
-                <Text style={styles.Txt}>{job?.line_length}</Text>
+                <Text style={styles.Txt}>
+                  {job?.get_job_detail?.line_length}
+                </Text>
               </View>
               <View style={styles.miniContainer}>
                 <Text style={[styles.Txt, {fontFamily: regular}]}>Mᵌ</Text>
-                <Text style={styles.Txt}>{job?.m3}</Text>
+                <Text style={styles.Txt}>{job?.get_job_detail?.m3}</Text>
               </View>
             </View>
-            {/* job apply section was here */}
           </View>
+          {/* job apply section was here */}
 
           <Modal
             isVisible={this.state.Show_Modal}

@@ -80,6 +80,12 @@ class AutoComplete extends Component {
         listViewDisplayed={true}
         fetchDetails={true}
         onPress={(data, details = null) => {
+          this.setState({
+            address_1: data.description,
+            lat: details.geometry.location.lat,
+            lng: details.geometry.location.lng,
+          });
+          console.log(88, details.geometry.location.lng);
           address_1 = {
             address_1: data.description,
             lat: details.geometry.location.lat,
@@ -129,15 +135,15 @@ class Create_Job extends Component {
       volume: '',
       job_name: '',
       description: '',
-      address_1: address_1.address_1,
+      // address_1: address_1.address_1,
       address_2: '',
       date_picker: new Date(),
       date_picker_modal: '',
       price_from: 0,
       price_to: 0,
       terms_modal: false,
-      lat: address_1.lat,
-      lng: address_1.lng,
+      // lat: address_1.lat,
+      // lng: address_1.lng,
 
       state_id: '',
       job_type_id: '',
@@ -207,7 +213,6 @@ class Create_Job extends Component {
       volume,
       job_name,
       description,
-      address_1,
       date_picker,
       price_from,
       price_to,
@@ -242,14 +247,12 @@ class Create_Job extends Component {
       volume,
       job_name,
       description,
-      address_1,
       address_2,
       date_picker,
       price_from,
       price_to,
-      lat,
-      lng,
     } = this.state;
+
     this.props.createJob(
       selectedState,
       selectedJobType,
@@ -258,14 +261,23 @@ class Create_Job extends Component {
       volume,
       job_name,
       description,
-      address_1,
+      address_1.address_1,
       address_2,
-      lat,
-      lng,
+      address_1.lat,
+      address_1.lng,
       this.dateFormatter(date_picker),
       price_from,
       price_to,
     );
+    this.setState({
+      line_length: '',
+      volume: '',
+      job_name: '',
+      description: '',
+      address_2: '',
+      price_from: '',
+      price_to: '',
+    });
   };
 
   onStateChange = val => {
@@ -695,6 +707,8 @@ const mapDispatchToProps = dispatch => {
       desc,
       add1,
       add2,
+      lat,
+      lng,
       map,
       date,
       time,
@@ -711,6 +725,8 @@ const mapDispatchToProps = dispatch => {
           desc,
           add1,
           add2,
+          lat,
+          lng,
           map,
           date,
           time,
