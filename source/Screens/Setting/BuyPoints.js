@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
-import { black, primary } from '../../assets/colors';
-import { bold, regular } from '../../assets/fonts';
-import { fetchAPI } from '../../services';
+import {black, primary} from '../../assets/colors';
+import {bold, regular} from '../../assets/fonts';
+import {fetchAPI} from '../../services';
 import Toast from 'react-native-toast-message';
 
 // componentDidMount() {
@@ -20,24 +26,19 @@ import Toast from 'react-native-toast-message';
 //     });
 //   }
 
-
-
-const BuyPoints = ({ navigation }) => {
+const BuyPoints = ({navigation}) => {
   const [data, setData] = useState([]);
-
-
 
   const getPackages = () => {
     fetchAPI('GET', `get-price`, null, true)
       .then(function (response) {
-        setData(response.data)
+        setData(response.data);
       })
       .catch(function (error) {
-        Toast.show({ text1: 'Something went wrong.' });
+        Toast.show({text1: 'Something went wrong.'});
         deletePumpDone(dispatch, errorHandler(error));
       });
-  }
-
+  };
 
   //   const [stripeData, setStripeData] = useState({
 
@@ -118,36 +119,39 @@ const BuyPoints = ({ navigation }) => {
 
   useEffect(() => {
     getPackages();
-
-
-  }, [])
+  }, []);
   return (
     <>
       <AppHeader
         Heading={'PACKAGES'}
         borderRadius={true}
         IsBack={true}
-        style={{ zIndex: 1 }}
+        style={{zIndex: 1}}
         IsDisable={true}
       />
 
       <View style={styles.container}>
-        {data?.length == 0 ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ marginBottom: hp('7') }}>Select your package</Text>
-          <ActivityIndicator color={'red'} size={hp('6')} />
-        </View> :
+        {data?.length == 0 ? (
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{marginBottom: hp('7')}}>Select your package</Text>
+            <ActivityIndicator color={'red'} size={hp('6')} />
+          </View>
+        ) : (
           data.map(item => {
-
             return (
               <PackageCard
                 points={item?.point}
                 amount={item?.price}
                 onPress={() =>
-                  navigation.navigate('PaymentForm', item?.id, { type: 'Pump' })}
+                  navigation.navigate('PaymentForm', {
+                    type: 'Pump',
+                    id: item?.id,
+                  })
+                }
               />
-            )
-          })}
-
+            );
+          })
+        )}
       </View>
     </>
   );
@@ -310,10 +314,10 @@ const styles = StyleSheet.create({
 
 export default BuyPoints;
 
-const PackageCard = ({ points, amount, onPress }) => {
+const PackageCard = ({points, amount, onPress}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Text style={[styles.btnText, { fontFamily: regular }]}>
+      <Text style={[styles.btnText, {fontFamily: regular}]}>
         <Text style={styles.btnText}>{points} </Text>
         points for
         <Text style={styles.btnText}> ${amount}</Text>

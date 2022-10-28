@@ -8,6 +8,8 @@ import {
     REGISTER_STEP_TWO_DONE,
     REGISTER_SUCCESS,
     PUT_USER_DATA,
+    UPDATE_USER_DATA,
+    ABC,
     // SET_EMAIL,
     // SET_PHONE,
     // SET_NAME,
@@ -19,15 +21,14 @@ import {
     // SET_IS_AGREE,
     // SET_WEBSITE,
     // SET_IS_CHECK,
-
-} from "../Constants";
-
+} from '../Constants';
 
 const initialState = {
     user: {},
-    token: "",
+    token: '',
     loading: false,
     registerLoading: false,
+    abc: '123',
     // email: "",
     // password: "",
     // phone: "",
@@ -37,13 +38,14 @@ const initialState = {
     // userType: true, // true for company false for pump
     // isCheck: false,
     // website: "",
-}
+};
 
 export default (state = initialState, action) => {
     const {
         type,
         token,
         user,
+        abc,
         // email,
         // password,
         // phone,
@@ -57,36 +59,60 @@ export default (state = initialState, action) => {
     switch (type) {
         case LOGIN:
             return {
-                ...state, loading: true
-            }
+                ...state,
+                loading: true,
+            };
         case LOGIN_DONE:
             return {
-                ...state, loading: false, token, user
-            }
+                ...state,
+                loading: false,
+                token,
+                user,
+            };
         case REGISTER_STEP_ONE:
             return {
-                ...state, loading: true, registerLoading: true
-            }
+                ...state,
+                loading: true,
+                registerLoading: true,
+            };
         case REGISTER_STEP_ONE_DONE:
             return {
-                ...state, loading: false, registerLoading: false
-            }
+                ...state,
+                loading: false,
+                registerLoading: false,
+            };
         case REGISTER_STEP_TWO:
             return {
-                ...state, loading: true, registerLoading: true
-            }
+                ...state,
+                loading: true,
+                registerLoading: true,
+            };
         case REGISTER_STEP_TWO_DONE:
             return {
-                ...state, loading: false, registerLoading: false
-            }
+                ...state,
+                loading: false,
+                registerLoading: false,
+            };
         // case REGISTER_SUCCESS:
         //     return {
         //         initialState
         //     }
         case PUT_USER_DATA:
             return {
-                ...state, user, token
-            }
+                ...state,
+                user,
+                token,
+            };
+        case UPDATE_USER_DATA:
+            return {
+                ...state,
+                user: user,
+            };
+        // case ABC:
+        //     return {
+        //         ...state,
+        //         abc: abc,
+        //     };
         // case SET_EMAIL:
         //     return {
         //         ...state, email
@@ -127,4 +153,4 @@ export default (state = initialState, action) => {
         default:
             return state;
     }
-}
+};

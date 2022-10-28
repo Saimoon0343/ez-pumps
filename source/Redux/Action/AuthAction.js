@@ -25,6 +25,8 @@ import {
   RESEND_OTP_DONE,
   GET_PUMP_FORM_INFO,
   GET_COMPANY_FORM_INFO,
+  UPDATE_USER_DATA,
+  ABC,
 } from '../Constants';
 import FormData from 'form-data';
 import {navigate} from '../../navigation';
@@ -329,5 +331,19 @@ export const setIsCheck = isCheck => {
   return {
     type: SET_IS_CHECK,
     isCheck,
+  };
+};
+
+export const updateUserData = user => {
+  return {
+    type: UPDATE_USER_DATA,
+    user: user,
+  };
+};
+
+export const setAbcVal = abc => {
+  return {
+    type: ABC,
+    abc: abc,
   };
 };

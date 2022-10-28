@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,27 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { bold, regular, semiBold } from '../../assets/fonts';
-import { white } from '../../assets/colors';
-import { fetchAPI } from '../../services';
+import {bold, regular, semiBold} from '../../assets/fonts';
+import {white} from '../../assets/colors';
+import {fetchAPI} from '../../services';
 import Toast from 'react-native-toast-message';
-import { errorMessage, successMessage } from '../../ScreenComponent/NotificationMessage';
+import {
+  errorMessage,
+  successMessage,
+} from '../../ScreenComponent/NotificationMessage';
+import {useDispatch} from 'react-redux';
+import {UPDATE_USER_DATA} from '../../Redux/Constants';
+import {updateUserData} from '../../Redux/Action/AuthAction';
+import {AuthContext} from '../../context';
+import {connect} from 'react-redux';
+import {setItem} from '../../persist-storage';
 
-export default class PaymentForm extends Component {
+class PaymentForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,54 +36,81 @@ export default class PaymentForm extends Component {
       Exp_Year: '',
       CVV: '',
       saved: false,
+      isloading: false,
     };
+    this.hitStripeAPi = this.hitStripeAPi.bind(this);
   }
   componentDidMount() {
-
     // console.log('payment form',this.props.navigation.getState().routes[0].state.history[0].key.split('-')[0])
   }
 
   hitStripeAPi = () => {
-
-    const { Card_Number, Exp_Month, Exp_Year, CVV } = this.state
-    var cardno = /^5[1-5][0-9]{14}$|^2(?:2(?:2[1-9]|[3-9][0-9])|[3-6][0-9][0-9]|7(?:[01][0-9]|20))[0-9]{12}$/;
+    this.setState({
+      isloading: true,
+    });
+    const {Card_Number, Exp_Month, Exp_Year, CVV} = this.state;
+    const {navigation, updateUserData} = this.props;
+    var cardno =
+      /^5[1-5][0-9]{14}$|^2(?:2(?:2[1-9]|[3-9][0-9])|[3-6][0-9][0-9]|7(?:[01][0-9]|20))[0-9]{12}$/;
     var today, someday;
     today = new Date();
     someday = new Date();
     someday.setFullYear(Exp_Year, Exp_Month, 1);
-    if (Card_Number.length == 16 && someday < today && Card_Number != null && Card_Number != '' && Exp_Month != null && Exp_Month != '' && Exp_Year != null && Exp_Year != '' && CVV != null && CVV != '') {
-
+    if (
+      Card_Number.length == 16 &&
+      someday < today &&
+      Card_Number != null &&
+      Card_Number != '' &&
+      Exp_Month != null &&
+      Exp_Month != '' &&
+      Exp_Year != null &&
+      Exp_Year != '' &&
+      CVV != null &&
+      CVV != ''
+    ) {
       var data = new FormData();
-      data.append('price_id', 1);
+      data.append('price_id', this.props.route.params.id);
       data.append('card_no', Card_Number);
       data.append('cc_expiry_month', Exp_Month);
       data.append('cc_expiry_year', Exp_Year);
       data.append('cvv_number', CVV);
-
+      // const {updateUserData} = this.props;
       fetchAPI('post', 'payment', data, true)
         .then(function (response) {
-          console.log(199, response);
+          updateUserData(response.data.data);
+          setItem('user', JSON.stringify(response.data.data));
+          navigation.goBack();
+          console.log(72, response.data.data);
+          this.setState({
+            isloading: false,
+          });
+
+          // this.context.updateState();
+          successMessage('Your payment haa been completed');
         })
         .catch(function (error) {
-          console.log(190, error);
+          console.log(89, error);
+          errorMessage(error.message);
+          this.setState({
+            isloading: false,
+          });
         });
+    } else {
+      Toast.show({text1: 'Please type correct information'});
+      errorMessage('Please type correct information');
+      this.setState({
+        isloading: false,
+      });
     }
-    else {
-      console.log('lkasjdlfjaskl');
-      errorMessage('Please type correct information')
-
-    }
-
-  }
+  };
 
   render() {
-
     return (
       <>
         <AppHeader Heading={'PAYMENT METHOD'} IsBack={true} BorRadius={true} />
         <View style={styles.main}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={[styles.Txt, { marginTop: hp('4%') }]}>
+            <Text style={[styles.Txt, {marginTop: hp('4%')}]}>
               Add Credit/Debit Card
             </Text>
 
@@ -90,7 +127,7 @@ export default class PaymentForm extends Component {
               blurOnSubmit={false}
             /> */}
 
-            <Text style={[styles.Txt, { fontSize: hp('1.8%') }]}>
+            <Text style={[styles.Txt, {fontSize: hp('1.8%')}]}>
               {' '}
               Credit card number
             </Text>
@@ -99,7 +136,7 @@ export default class PaymentForm extends Component {
                 this.NextInput = ref;
               }}
               value={this.state.Card_Number}
-              onChangeText={text => this.setState({ Card_Number: text })}
+              onChangeText={text => this.setState({Card_Number: text})}
               placeholder={'3489-7596-1234-4686'}
               style={styles.InputStyle}
               keyboardType="decimal-pad"
@@ -109,8 +146,8 @@ export default class PaymentForm extends Component {
             />
 
             <View style={styles.Bottom_Era}>
-              <View style={{ width: '22%' }}>
-                <Text style={[styles.Txt, { fontSize: hp('1.8%') }]}>
+              <View style={{width: '22%'}}>
+                <Text style={[styles.Txt, {fontSize: hp('1.8%')}]}>
                   {' '}
                   Expiry
                 </Text>
@@ -119,11 +156,11 @@ export default class PaymentForm extends Component {
                     this.NextInput2 = ref;
                   }}
                   value={parseInt(this.state.Exp_Month)}
-                  onChangeText={text => this.setState({ Exp_Month: text })}
+                  onChangeText={text => this.setState({Exp_Month: text})}
                   placeholder={'MM'}
                   style={[
                     styles.InputStyle,
-                    { width: '75%', paddingLeft: hp('1%') },
+                    {width: '75%', paddingLeft: hp('1%')},
                   ]}
                   keyboardType="decimal-pad"
                   onSubmitEditing={() => this.NextInput3.focus()}
@@ -132,18 +169,18 @@ export default class PaymentForm extends Component {
                 />
               </View>
 
-              <View style={{ width: '25%' }}>
-                <Text style={[styles.Txt, { fontSize: hp('1.8%') }]}></Text>
+              <View style={{width: '25%'}}>
+                <Text style={[styles.Txt, {fontSize: hp('1.8%')}]}></Text>
                 <TextInput
                   ref={ref => {
                     this.NextInput3 = ref;
                   }}
                   value={parseInt(this.state.Exp_Year)}
-                  onChangeText={text => this.setState({ Exp_Year: text })}
+                  onChangeText={text => this.setState({Exp_Year: text})}
                   placeholder={'YY'}
                   style={[
                     styles.InputStyle,
-                    { width: '70%', paddingLeft: hp('1%') },
+                    {width: '70%', paddingLeft: hp('1%')},
                   ]}
                   keyboardType="decimal-pad"
                   onSubmitEditing={() => this.NextInput4.focus()}
@@ -152,11 +189,11 @@ export default class PaymentForm extends Component {
                 />
               </View>
 
-              <View style={{ width: '50%', alignItems: 'flex-end' }}>
+              <View style={{width: '50%', alignItems: 'flex-end'}}>
                 <Text
                   style={[
                     styles.Txt,
-                    { fontSize: hp('1.8%'), alignSelf: 'center' },
+                    {fontSize: hp('1.8%'), alignSelf: 'center'},
                   ]}>
                   {' '}
                   CVV number
@@ -166,11 +203,11 @@ export default class PaymentForm extends Component {
                     this.NextInput4 = ref;
                   }}
                   value={parseInt(this.state.CVV)}
-                  onChangeText={text => this.setState({ CVV: text })}
+                  onChangeText={text => this.setState({CVV: text})}
                   placeholder={'CVV'}
                   style={[
                     styles.InputStyle,
-                    { width: '75%', paddingLeft: hp('1%') },
+                    {width: '75%', paddingLeft: hp('1%')},
                   ]}
                   keyboardType="decimal-pad"
                   maxLength={3}
@@ -178,19 +215,25 @@ export default class PaymentForm extends Component {
                 />
               </View>
             </View>
+            {this.state.isloading ? (
+              <ActivityIndicator
+                color={'red'}
+                size={'large'}
+                style={{marginTop: hp('2')}}
+              />
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={this.hitStripeAPi}>
+                <Text style={[styles.Txt, {color: '#FFFFFF', marginTop: 0}]}>
+                  CONTINUE
+                </Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.btn}
-              onPress={this.hitStripeAPi}
-            >
-              <Text style={[styles.Txt, { color: '#FFFFFF', marginTop: 0 }]}>
-                CONTINUE
-              </Text>
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity
-              onPress={() => this.setState({ saved: !this.state.saved })}
+              onPress={() => this.setState({saved: !this.state.saved})}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -203,7 +246,7 @@ export default class PaymentForm extends Component {
                   name="ios-checkmark-circle"
                   color={'green'}
                   size={hp('3%')}
-                  style={{ marginTop: hp('2%') }}
+                  style={{marginTop: hp('2%')}}
                 />
               )}
               <Text
@@ -219,13 +262,29 @@ export default class PaymentForm extends Component {
                   ? 'Your Card Saved'
                   : 'Do You Want to Save card for future payments'}
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUserData: val => dispatch(updateUserData(val)),
+  };
+};
+
+PaymentForm.contextType = AuthContext;
+
+// export default PaymentForm;
+export default connect(null, mapDispatchToProps)(PaymentForm);
 
 const styles = StyleSheet.create({
   main: {
@@ -254,7 +313,7 @@ const styles = StyleSheet.create({
     lineHeight: hp('1.8%'),
     color: 'black',
     shadowColor: '#0000002E',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 4,
     shadowRadius: 3,
     elevation: 2,

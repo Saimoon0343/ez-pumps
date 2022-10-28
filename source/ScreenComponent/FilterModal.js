@@ -40,7 +40,7 @@ export default ({ heading, onBackPress, isVisible, value, data, onSubmit }) => {
             <View style={styles.modalContainer}>
                 <Text style={styles.heading}>SELECT {heading.toUpperCase()}</Text>
                 <ScrollView>
-                    {data.map(item =>
+                    {data?.map(item =>
                         <TouchableOpacity onPress={() => setSelected(item)} style={styles.row}>
                             {/* <Text style={styles.text}>{toTitleCase(item.type_name)}</Text> */}
                             <Text style={styles.text}>{toTitleCase(item.name || item.type)}</Text>
