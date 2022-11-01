@@ -17,28 +17,30 @@ class Jobs extends Component {
     this.state = {
       filterType: '',
       filterVisible: false,
-      filterValue: '',
+      filterValue: {id: 1, name: ''},
     };
     this.jobsListRef = React.createRef();
-  }
-
-  componentDidMount() {
-    this.props.loadPumps();
   }
 
   onFilterPress = filterText => {
     const {jobsFilter} = this.props;
     var filterValue;
-    console.log(33, filterText);
     if (filterText == 'State') {
       filterValue = jobsFilter.states;
+      filterValue = filterValue.id == '' ? {id: 1, name: ''} : filterValue;
     } else if (filterText == 'Pump Type') {
       filterValue = jobsFilter.pumpType;
+      filterValue = filterValue.id == '' ? {id: 1, name: ''} : filterValue;
     } else {
       filterValue = jobsFilter.jobType;
+      filterValue = filterValue.id == '' ? {id: 1, name: ''} : filterValue;
     }
-    this.setState({filterValue, filterType: filterText, filterVisible: true});
+    (filterValue = filterValue.id == '' ? {id: 1, name: ''} : filterValue),
+      this.setState({filterValue, filterType: filterText, filterVisible: true});
   };
+  componentDidMount() {
+    this.props.loadPumps();
+  }
 
   onFilterSubmitPress = val => {
     this.setState({filterVisible: false});
@@ -47,7 +49,6 @@ class Jobs extends Component {
     }
     const {filterType} = this.state;
     const {jobsFilter} = this.props;
-    console.log(231, jobsFilter);
     if (filterType == 'State') {
       if (val.id == jobsFilter.states.id) {
         return;

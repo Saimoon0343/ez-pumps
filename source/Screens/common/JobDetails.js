@@ -64,7 +64,7 @@ class Find_Job extends Component {
           ]}>
           <Text style={styles.DesTxt}> Job Description </Text>
           <Text style={[styles.DesTxt, {marginBottom: hp('2%')}]}>
-            {job?.get_job_detail?.description}
+            {job?.job_detail?.description}
           </Text>
           <Job_Pending />
         </View>
@@ -142,7 +142,7 @@ class Find_Job extends Component {
               <View style={styles.miniContainer}>
                 <Text style={[styles.Txt, {marginTop: hp('2%')}]}>
                   {type == 'inprogress'
-                    ? `${job?.get_job_detail?.address_1}`
+                    ? `${job?.job_detail?.address_1}`
                     : 'Private'}
                 </Text>
                 <Text style={[styles.Txt, {fontFamily: regular}]}>{}</Text>
@@ -155,9 +155,8 @@ class Find_Job extends Component {
                 </View>
               </View>
               <View style={styles.miniContainer}>
-                <Text style={styles.Txt}>
-                  {job?.get_job_detail?.date_and_time}
-                </Text>
+                {console.log(158, job?.job_detail)}
+                <Text style={styles.Txt}>{job?.job_detail?.date_and_time}</Text>
                 <View style={styles.ImageCont}>
                   <AntDesign name="calendar" color={white} size={hp('3%')} />
                 </View>
@@ -172,7 +171,7 @@ class Find_Job extends Component {
                   Job Type
                 </Text>
                 <Text style={styles.Txt}>
-                  {job?.get_job_detail?.get_job_type?.type}
+                  {job?.job_detail?.get_job_type?.type}
                 </Text>
               </View>
               <View style={styles.miniContainer}>
@@ -180,7 +179,7 @@ class Find_Job extends Component {
                   Pump Type
                 </Text>
                 <Text style={styles.Txt}>
-                  {job?.get_job_detail?.get_pump_type?.name}
+                  {job?.job_detail?.get_pump_type?.name}
                 </Text>
               </View>
             </View>
@@ -190,13 +189,11 @@ class Find_Job extends Component {
                 <Text style={[styles.Txt, {fontFamily: regular}]}>
                   Line Length
                 </Text>
-                <Text style={styles.Txt}>
-                  {job?.get_job_detail?.line_length}
-                </Text>
+                <Text style={styles.Txt}>{job?.job_detail?.line_length}</Text>
               </View>
               <View style={styles.miniContainer}>
                 <Text style={[styles.Txt, {fontFamily: regular}]}>Mᵌ</Text>
-                <Text style={styles.Txt}>{job?.get_job_detail?.m3}</Text>
+                <Text style={styles.Txt}>{job?.job_detail?.m3}</Text>
               </View>
             </View>
           </View>

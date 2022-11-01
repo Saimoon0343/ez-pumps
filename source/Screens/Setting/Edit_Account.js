@@ -30,7 +30,7 @@ import {AuthContext} from '../../context';
 import {errorHandler} from '../../utils';
 var FormData = require('form-data');
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {updateUserData, setAbcVal} from '../../Redux/Action/AuthAction';
+import {updateUserData} from '../../Redux/Action/AuthAction';
 import {UPDATE_USER_DATA} from '../../Redux/Constants';
 
 var addressVar = {
@@ -45,7 +45,7 @@ var addressVar = {
 
 class AutoComplete extends Component {
   constructor(props) {
-    console.log(props);
+    // console.log(props);
     super(props);
     this.state = {
       region: {
@@ -95,7 +95,7 @@ class AutoComplete extends Component {
           listViewDisplayed={true}
           fetchDetails={true}
           onPress={(data, details = null) => {
-            console.log(79, data, details);
+            // console.log(79, data, details);
             addressVar = {
               desp: data.description,
               region: {
@@ -132,6 +132,7 @@ class Edit_Account extends React.Component {
       phone_number: '',
       email: '',
       loading: false,
+      coverImageBase64: null,
     };
   }
 
@@ -188,6 +189,8 @@ class Edit_Account extends React.Component {
       phone_number,
       company_name,
       user_name,
+      coverImage,
+      coverImageBase64,
     } = this.state;
     var data = new FormData();
     data.append('email', email);
@@ -196,38 +199,43 @@ class Edit_Account extends React.Component {
     data.append('user_name', user_name);
     data.append('address', address);
     data.append('website', website);
+    if (coverImageBase64) {
+      data.append('cover_image', coverImageBase64);
+    }
     data.append('description', description);
     data.append('address', addressVar.desp);
     data.append('lat', addressVar.region.latitude);
     data.append('lng', addressVar.region.longitude);
-
     const {updateUserData} = this.props;
+
     fetchAPI('post', 'update-profile', data, token)
       .then(function (response) {
-        console.log('res ===> ', response.data);
-
         Toast.show({text1: response.data.message});
         that.setState({loading: false});
-        console.log(211, response.data);
-        if (response.status == 200) {
-          updateUserData(response.data.data);
-          setItem('user', JSON.stringify(response.data.data));
-
-          // this.props.updateUserData();
+        if (response.status === 200) {
+          updateUserData(response.data.user);
+          setItem('user', JSON.stringify(response.data.user));
         }
       })
       .catch(function (error) {
-        console.log('exception =====>', error);
         that.setState({loading: false});
         Toast.show({text1: errorHandler(error)});
       });
   };
   selectImage = () => {
-    launchImageLibrary({mediaType: 'photo', quality: 0.8}, response => {
-      // console.log('Response = ', response);
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+      includeBase64: true,
+    };
+    launchImageLibrary(options, response => {
       if (!response?.didCancel) {
-        const coverImage = response.assets[0].uri;
-        this.setState({coverImage});
+        let source1 = response.assets[0].base64;
+        let coverImageBase64 = `data:image/png;base64,${source1}`;
+        this.setState({coverImageBase64});
+        this.setState({coverImage: coverImageBase64});
       }
     });
   };
@@ -301,7 +309,7 @@ class Edit_Account extends React.Component {
         />
         <TitleRow title={user.company_name} />
         <View style={styles.main}>
-          {console.log('here body=====>', this.props.user.user_name)}
+          {/* {console.log('here body=====>', this.props.user.user_name)} */}
           <ScrollView showsVerticalScrollIndicator={false}>
             {this.renderImage()}
             <LabelInput

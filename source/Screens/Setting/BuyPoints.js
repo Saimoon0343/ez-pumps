@@ -35,7 +35,6 @@ const BuyPoints = ({navigation}) => {
         setData(response.data);
       })
       .catch(function (error) {
-        console.log(38, error);
         Toast.show({text1: 'Something went wrong.'});
       });
   };

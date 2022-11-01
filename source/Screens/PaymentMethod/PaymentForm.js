@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {
   View,
   Text,
@@ -25,7 +25,13 @@ import {updateUserData} from '../../Redux/Action/AuthAction';
 import {AuthContext} from '../../context';
 import {connect} from 'react-redux';
 import {setItem} from '../../persist-storage';
-var isloading = false;
+const loadingFun = value => {
+  // const [isloading, setIsloading] = useState(false);
+  let isloading = false;
+  isloading = value;
+  // setIsloading(value);
+  return isloading;
+};
 class PaymentForm extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +42,7 @@ class PaymentForm extends Component {
       Exp_Year: '',
       CVV: '',
       saved: false,
-      isloading: false,
+      abc: false,
       changeString: '',
     };
     this.hitStripeAPi = this.hitStripeAPi.bind(this);
@@ -46,10 +52,9 @@ class PaymentForm extends Component {
   }
 
   hitStripeAPi = () => {
-    // this.setState({
-    // });
-    isloading = true;
-    console.log('Check State =====>', isloading);
+    loadingFun(true);
+    // isloading = true;
+    // console.log('Check State =====>', isloading);
 
     const {Card_Number, Exp_Month, Exp_Year, CVV} = this.state;
     const {navigation, updateUserData} = this.props;
@@ -59,8 +64,9 @@ class PaymentForm extends Component {
     today = new Date();
     someday = new Date();
     someday.setFullYear(Exp_Year, Exp_Month, 1);
+
     if (
-      Card_Number.length == 16 &&
+      Card_Number.replace(/\s/g, '').length == 16 &&
       someday < today &&
       Card_Number != null &&
       Card_Number != '' &&
@@ -73,43 +79,47 @@ class PaymentForm extends Component {
     ) {
       var data = new FormData();
       data.append('price_id', this.props.route.params.id);
-      data.append('card_no', Card_Number);
+      data.append('card_no', Card_Number.replace(/\s/g, ''));
       data.append('cc_expiry_month', Exp_Month);
       data.append('cc_expiry_year', Exp_Year);
       data.append('cvv_number', CVV);
-      // const {updateUserData} = this.props;
       fetchAPI('post', 'payment', data, true)
         .then(function (response) {
           updateUserData(response.data.data);
           setItem('user', JSON.stringify(response.data.data));
           navigation.goBack();
-          console.log('Check State =====>', isloading);
-
           isloading = false;
-
+          loadingFun(false);
           // this.context.updateState();
           successMessage('Your payment haa been completed');
         })
         .catch(function (error) {
-          console.log(89, error);
+          // console.log('89', error);
           errorMessage(error.message);
-          console.log('Check State =====>', isloading);
-
+          // console.log('Check State =====>', isloading);
+          loadingFun(false);
           isloading = false;
         });
     } else {
       Toast.show({text1: 'Please type correct information'});
       errorMessage('Please type correct information');
       isloading = false;
+      loadingFun(false);
     }
   };
-
   render() {
+    var that = this;
     return (
       <>
         <AppHeader Heading={'PAYMENT METHOD'} IsBack={true} BorRadius={true} />
         <View style={styles.main}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{
+              justifyContent: 'center',
+              // height: hp('80'),
+              marginTop: hp('5'),
+            }}
+            showsVerticalScrollIndicator={false}>
             <Text style={[styles.Txt, {marginTop: hp('4%')}]}>
               Add Credit/Debit Card
             </Text>
@@ -199,7 +209,7 @@ class PaymentForm extends Component {
                   ]}
                   keyboardType="decimal-pad"
                   onSubmitEditing={() => this.NextInput4.focus()}
-                  maxLength={4}
+                  maxLength={2}
                   blurOnSubmit={false}
                 />
               </View>
@@ -230,7 +240,7 @@ class PaymentForm extends Component {
                 />
               </View>
             </View>
-            {isloading == true ? (
+            {loadingFun() == true ? (
               <ActivityIndicator
                 color={'red'}
                 size={'large'}

@@ -23,7 +23,6 @@ export default ({heading, onBackPress, isVisible, value, data, onSubmit}) => {
   useEffect(() => {
     setSelected(value);
   }, [isVisible]);
-
   const onClose = () => {
     if (!value.id) setSelected({id: '', type_name: ''});
     onBackPress();

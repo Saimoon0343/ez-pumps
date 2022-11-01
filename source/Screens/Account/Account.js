@@ -237,7 +237,7 @@ class Account extends Component {
 
   renderImage() {
     const {cover_image} = this.state?.user;
-
+    console.log(240, cover_image);
     if (cover_image) {
       return {uri: `${BASE_URL}${cover_image}`};
     } else {

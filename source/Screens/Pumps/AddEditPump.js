@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -8,78 +8,91 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import AppHeader from '../../ScreenComponent/AppHeader';
-import { OtherTextInput } from '../../ScreenComponent/TextInput';
-import { primary, secondary, white } from '../../assets/colors';
-import { bold, regular, semiBold } from '../../assets/fonts';
-import { connect } from 'react-redux';
+import {OtherTextInput} from '../../ScreenComponent/TextInput';
+import {primary, secondary, white} from '../../assets/colors';
+import {bold, regular, semiBold} from '../../assets/fonts';
+import {connect} from 'react-redux';
 import LabelInput from '../../ScreenComponent/common/LabelInput';
-import { deletePump, createUpdatePump } from '../../Redux/Action/PumpAction';
-import { Button } from '../../ScreenComponent/common/Button';
+import {deletePump, createUpdatePump} from '../../Redux/Action/PumpAction';
+import {Button} from '../../ScreenComponent/common/Button';
 import SnackBar from '../../ScreenComponent/common/SnackBar';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { SHOW_OR_HIDE_DELETE_PUMP_ALERT } from '../../Redux/Constants';
-import { fetchAPI, getToken } from '../../services';
+import {SHOW_OR_HIDE_DELETE_PUMP_ALERT} from '../../Redux/Constants';
+import {fetchAPI, getToken} from '../../services';
 import ErrorMessage from '../../ScreenComponent/common/ErrorMessage';
 import DropDownComponent from '../../ScreenComponent/DropDownPicker_Component';
 import CheckBox from '@react-native-community/checkbox';
 import Toast from 'react-native-toast-message';
+import SelectList from 'react-native-dropdown-select-list';
 
-function Availability({ Day, OnChange, availability }) {
-  const { is_enable, am_slot, pm_slot } = availability;
+function Availability({Day, OnChange, availability}) {
+  const {is_enable, am_slot, pm_slot} = availability;
   return (
-    <View style={styles.Container}>
-      <View
-        style={{ width: '30%', alignItems: 'center', justifyContent: 'center' }}>
-        <Text
+    Day != 'Satuarday' && (
+      <View style={styles.Container}>
+        <View
           style={{
-            color: primary,
-            fontSize: hp('1.8%'),
-            lineHeight: hp('1.9%'),
+            width: '30%',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          {' '}
-          {Day}{' '}
-        </Text>
+          <Text
+            style={{
+              color: primary,
+              fontSize: hp('1.8%'),
+              lineHeight: hp('1.9%'),
+            }}>
+            {' '}
+            {Day}{' '}
+          </Text>
+        </View>
+        <View
+          style={{
+            width: '70%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+          }}>
+          <CheckBox
+            value={am_slot}
+            onValueChange={value => OnChange(Day, is_enable, value, pm_slot)}
+            disabled={!is_enable}
+            onTintColor={'red'}
+            onCheckColor={'red'}
+            tintColors={{true: 'red'}}
+            // hideBox={!is_enable}
+          />
+          <Text style={{fontFamily: regular, fontSize: hp('1.8%')}}>AM</Text>
+          <CheckBox
+            value={pm_slot}
+            onValueChange={value => OnChange(Day, is_enable, am_slot, value)}
+            tintColors={{true: 'red'}}
+            onTintColor={'red'}
+            onCheckColor={'red'}
+            disabled={!is_enable}
+            // hideBox={!is_enable}
+          />
+          <Text style={{fontFamily: regular, fontSize: hp('1.8%')}}>PM</Text>
+          <Switch
+            value={is_enable}
+            onChange={value => OnChange(Day, !is_enable, am_slot, pm_slot)}
+            thumbColor={is_enable ? secondary : 'gray'}
+            trackColor={{false: 'lightgray', true: 'lightgray'}}
+          />
+        </View>
       </View>
-      <View
-        style={{
-          width: '70%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
-        }}>
-        <CheckBox
-          value={am_slot}
-          onValueChange={value => OnChange(Day, is_enable, value, pm_slot)}
-          disabled={!is_enable}
-          onTintColor={'red'}
-          onCheckColor={'red'}
-          tintColors={{ true: 'red' }}
-        // hideBox={!is_enable}
-        />
-        <Text style={{ fontFamily: regular, fontSize: hp('1.8%') }}>AM</Text>
-        <CheckBox
-          value={pm_slot}
-          onValueChange={value => OnChange(Day, is_enable, am_slot, value)}
-          tintColors={{ true: 'red' }}
-          onTintColor={'red'}
-          onCheckColor={'red'}
-          disabled={!is_enable}
-        // hideBox={!is_enable}
-        />
-        <Text style={{ fontFamily: regular, fontSize: hp('1.8%') }}>PM</Text>
-        <Switch
-          value={is_enable}
-          onChange={value => OnChange(Day, !is_enable, am_slot, pm_slot)}
-          thumbColor={is_enable ? secondary : 'gray'}
-          trackColor={{ false: 'lightgray', true: 'lightgray' }}
-        />
-      </View>
-    </View>
+    )
   );
 }
-
+const setAllDataFun = async (setS, data) => {
+  setS.setState({
+    selectedState: data.pump_details.get_state,
+    selectedJobType: data.pump_details.get_job_type,
+    selectedPumpType: data.pump_details.get_pump_type,
+  });
+};
 class AddEditPump extends Component {
   constructor(props) {
     super(props);
@@ -93,26 +106,27 @@ class AddEditPump extends Component {
       pump_name: '',
       description: '',
       availability: {
-        Monday: { is_enable: false, am_slot: false, pm_slot: false },
-        Tuesday: { is_enable: false, am_slot: false, pm_slot: false },
-        Wednesday: { is_enable: false, am_slot: false, pm_slot: false },
-        Thursday: { is_enable: false, am_slot: false, pm_slot: false },
-        Friday: { is_enable: false, am_slot: false, pm_slot: false },
-        Saturday: { is_enable: false, am_slot: false, pm_slot: false },
-        Sunday: { is_enable: false, am_slot: false, pm_slot: false },
+        Monday: {is_enable: false, am_slot: false, pm_slot: false},
+        Tuesday: {is_enable: false, am_slot: false, pm_slot: false},
+        Wednesday: {is_enable: false, am_slot: false, pm_slot: false},
+        Thursday: {is_enable: false, am_slot: false, pm_slot: false},
+        Friday: {is_enable: false, am_slot: false, pm_slot: false},
+        Saturday: {is_enable: false, am_slot: false, pm_slot: false},
+        Sunday: {is_enable: false, am_slot: false, pm_slot: false},
       },
+      isLoading: true,
     };
   }
 
   componentDidMount() {
-    const { id } = this.state;
+    const {id} = this.state;
     const token = getToken();
 
     if (id) {
       // edit
       fetchAPI('get', 'get-pump-info/' + id, null, token)
-        .then(response => {
-          const availability = { ...this.state.availability };
+        .then(async response => {
+          const availability = {...this.state.availability};
           response.data.pump_details.get_availability.map(item => {
             availability[item['day_name']] = {
               is_enable: item['is_enable'] ? true : false,
@@ -120,30 +134,49 @@ class AddEditPump extends Component {
               pm_slot: item['pm_slot'] ? true : false,
             };
           });
+          // console.log(
+          //   'parent =======>',
+          //   response.data.pump_details.state_id,
+          //   response.data.pump_details.job_type_id,
+          //   response.data.pump_details.pump_type_id,
+          // );
+          // let st = this.setState();
+          // await setAllDataFun(this, response.data);
           this.setState({
-            selectedState: response.data.pump_details.state_id,
-            selectedJobType: response.data.pump_details.job_type_id,
-            selectedPumpType: response.data.pump_details.pump_type_id,
+            selectedState: response.data.pump_details.get_state,
+            selectedJobType: response.data.pump_details.get_job_type,
+            selectedPumpType: response.data.pump_details.get_pump_type,
             line_length: response.data.pump_details.line_length,
             volume: response.data.pump_details.m3,
             pump_name: response.data.pump_details.name,
             description: response.data.pump_details.description,
             availability: availability,
+            isLoading: false,
           });
+          // console.log(
+          //   '===================>',
+          //   this.state.selectedJobType,
+          //   this.state.selectedPumpType,
+          //   this.state.selectedState,
+          // );
         })
-        .catch(() => Toast.show({ text1: 'Something went wrong.' }));
+        .catch(() => Toast.show({text1: 'Something went wrong.'}));
+    } else {
+      this.setState({
+        isLoading: false,
+      });
     }
   }
 
   onAvailabilityChange = (day, is_enable, am_slot, pm_slot) => {
-    const availability = { ...this.state.availability };
+    const availability = {...this.state.availability};
 
     if (is_enable === false) {
-      availability[day] = { is_enable: false, am_slot: false, pm_slot: false };
+      availability[day] = {is_enable: false, am_slot: false, pm_slot: false};
     } else {
-      availability[day] = { is_enable: true, am_slot: am_slot, pm_slot: pm_slot };
+      availability[day] = {is_enable: true, am_slot: am_slot, pm_slot: pm_slot};
     }
-    this.setState({ availability: availability });
+    this.setState({availability: availability});
   };
 
   onAddEditPump = () => {
@@ -190,10 +223,10 @@ class AddEditPump extends Component {
           availability,
         );
       } else {
-        return Toast.show({ text1: 'Select Pump Availability' });
+        return Toast.show({text1: 'Select Pump Availability'});
       }
     } else {
-      return Toast.show({ text1: 'Enter All Fields' });
+      return Toast.show({text1: 'Enter All Fields'});
     }
   };
 
@@ -210,7 +243,7 @@ class AddEditPump extends Component {
       availability,
     } = this.state;
 
-    const { loading, failed, pump_form_info, delete_alert, delete_loading } =
+    const {loading, failed, pump_form_info, delete_alert, delete_loading} =
       this.props;
 
     return (
@@ -220,9 +253,9 @@ class AddEditPump extends Component {
           IsBack={true}
           BorRadius={true}
         />
-        {loading ? (
+        {loading || this.state.isLoading ? (
           <ActivityIndicator
-            style={{ padding: hp('10%') }}
+            style={{padding: hp('10%')}}
             size={'large'}
             color={secondary}
           />
@@ -231,35 +264,37 @@ class AddEditPump extends Component {
         ) : (
           <View style={styles.main}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={[styles.Txt, { marginTop: hp('2%') }]}>
+              <Text style={[styles.Txt, {marginTop: hp('2%')}]}>
                 Setup your pump details
               </Text>
+
               <DropDownComponent
                 label={'State'}
                 data={pump_form_info.states}
                 selectedValue={selectedState}
                 onChange={val => {
-                  this.setState({ selectedState: val });
+                  this.setState({selectedState: val});
                 }}
               />
               <DropDownComponent
                 label={'Job Type'}
                 data={pump_form_info.job_types}
                 selectedValue={selectedJobType}
-                onChange={val => this.setState({ selectedJobType: val })}
+                onChange={val => this.setState({selectedJobType: val})}
               />
+              {/* <V/View> */}
               <DropDownComponent
                 label={'Pump Type'}
                 data={pump_form_info.pump_types}
                 selectedValue={selectedPumpType}
-                onChange={val => this.setState({ selectedPumpType: val })}
+                onChange={val => this.setState({selectedPumpType: val})}
               />
               <OtherTextInput
                 Field={'Line Length'}
                 value={line_length}
-                style={{ width: '60%', textAlign: 'center' }}
-                mainstyle={{ marginTop: hp('2%') }}
-                OnChangeText={text => this.setState({ line_length: text })}
+                style={{width: '60%', textAlign: 'center'}}
+                mainstyle={{marginTop: hp('2%')}}
+                OnChangeText={text => this.setState({line_length: text})}
                 otherProps={{
                   placeholder: '30',
                   maxLength: 6,
@@ -269,9 +304,9 @@ class AddEditPump extends Component {
               <OtherTextInput
                 Field={'Mᵌ'}
                 value={volume}
-                style={{ width: '60%', textAlign: 'center' }}
-                mainstyle={{ marginTop: hp('2%') }}
-                OnChangeText={text => this.setState({ volume: text })}
+                style={{width: '60%', textAlign: 'center'}}
+                mainstyle={{marginTop: hp('2%')}}
+                OnChangeText={text => this.setState({volume: text})}
                 otherProps={{
                   placeholder: '30',
                   maxLength: 6,
@@ -280,7 +315,7 @@ class AddEditPump extends Component {
               />
               <LabelInput
                 value={pump_name}
-                onChange={text => this.setState({ pump_name: text })}
+                onChange={text => this.setState({pump_name: text})}
                 placeholder={'Enter Pump Name'}
                 style={{
                   marginBottom: 0,
@@ -297,7 +332,7 @@ class AddEditPump extends Component {
               <LabelInput
                 value={description}
                 multiline
-                onChange={text => this.setState({ description: text })}
+                onChange={text => this.setState({description: text})}
                 placeholder={'Enter Description'}
                 style={{
                   marginBottom: 0,
@@ -340,7 +375,7 @@ class AddEditPump extends Component {
                 text={id ? 'EDIT PUMP' : 'ADD NEW PUMP'}
                 textColor={white}
                 onPress={this.onAddEditPump}
-                style={{ alignSelf: 'center', marginTop: hp('3%') }}
+                style={{alignSelf: 'center', marginTop: hp('3%')}}
               />
               {id ? (
                 <Button
@@ -348,10 +383,10 @@ class AddEditPump extends Component {
                   text={'DELETE PUMP'}
                   textColor={white}
                   onPress={() => this.props.showOrHideDeleteAlert(true)}
-                  style={{ alignSelf: 'center', marginTop: hp('3%') }}
+                  style={{alignSelf: 'center', marginTop: hp('3%')}}
                 />
               ) : null}
-              <View style={{ height: hp('5%') }} />
+              <View style={{height: hp('5%')}} />
             </ScrollView>
 
             <AwesomeAlert
@@ -361,8 +396,8 @@ class AddEditPump extends Component {
               progressSize={25}
               title="Confirm"
               message="Are you sure you want to delete this pump?"
-              titleStyle={{ color: secondary }}
-              messageStyle={{ fontSize: hp('2.25%') }}
+              titleStyle={{color: secondary}}
+              messageStyle={{fontSize: hp('2.25%')}}
               closeOnTouchOutside={false}
               closeOnHardwareBackPress={false}
               showConfirmButton={true}
@@ -377,8 +412,8 @@ class AddEditPump extends Component {
               }}
               confirmButtonColor={secondary}
               cancelButtonColor="#979797"
-              cancelButtonStyle={{ minWidth: hp('12%'), alignItems: 'center' }}
-              confirmButtonStyle={{ minWidth: hp('12%'), alignItems: 'center' }}
+              cancelButtonStyle={{minWidth: hp('12%'), alignItems: 'center'}}
+              confirmButtonStyle={{minWidth: hp('12%'), alignItems: 'center'}}
               confirmButtonTextStyle={{
                 fontFamily: regular,
                 fontSize: hp('1.9%'),
@@ -469,7 +504,7 @@ const styles = StyleSheet.create({
     borderColor: white,
     backgroundColor: white,
     shadowColor: '#00000029',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowRadius: 6,
     elevation: 6,
   },
@@ -486,7 +521,7 @@ const styles = StyleSheet.create({
     borderColor: white,
     backgroundColor: white,
     shadowColor: '#00000029',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowRadius: 6,
     elevation: 6,
   },
@@ -510,7 +545,7 @@ const styles = StyleSheet.create({
     marginTop: hp('2%'),
     shadowColor: '#00000029',
     shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
   },
   Btn: {
     height: hp('5%'),

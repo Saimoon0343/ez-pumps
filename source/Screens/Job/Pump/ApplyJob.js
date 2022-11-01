@@ -180,7 +180,7 @@ class ApplyJob extends Component {
                   Pump Type
                 </Text>
                 <Text style={styles.Txt}>
-                  {toTitleCase(job.get_pump_type.name)}
+                  {toTitleCase(job.job_detail.name)}
                 </Text>
               </View>
             </View>
