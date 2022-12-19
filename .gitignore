@@ -27,7 +27,7 @@ ios/.xcode.env.local
 build/
 .idea
 .gradle
-local.properties
+# local.properties
 *.iml
 *.hprof
 
@@ -40,8 +40,8 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
-!debug.keystore
+# *.keystore
+# !debug.keystore
 
 # fastlane
 #
